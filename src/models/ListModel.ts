@@ -94,3 +94,5 @@ class ListModel {
 }
 
 export default ListModel;
+
+export type { List };

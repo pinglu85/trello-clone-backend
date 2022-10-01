@@ -109,3 +109,5 @@ class BoardModel {
 }
 
 export default BoardModel;
+
+export type { Board };
