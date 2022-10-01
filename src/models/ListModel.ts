@@ -35,7 +35,9 @@ class ListModel {
         lists
       WHERE
         board_id = $1
-        AND closed = false;
+        AND closed = false
+      ORDER BY
+        rank;     
     `;
 
     const { rows } = await pgPool.query<List>(query, [boardId]);
