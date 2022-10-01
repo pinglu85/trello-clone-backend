@@ -3,7 +3,7 @@
     /* Visit https://aka.ms/tsconfig to read more about this file */
     "target": "ES2017",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
     "outDir": "./dist",
     "typeRoots": ["node_modules/@types", "src/@types"],
     "esModuleInterop": true,
