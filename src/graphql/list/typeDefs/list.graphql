@@ -1,0 +1,30 @@
+scalar Date
+
+type List {
+  id: ID!
+  boardId: String!
+  cards: [Card!]!
+  closed: Boolean!
+  createdAt: Date!
+  name: String!
+  rank: String!
+  updatedAt: Date!
+  version: Int!
+}
+
+type Query {
+  lists(boardId: ID!): [List!]!
+  list(id: ID!): List!
+}
+
+input ListUpdateInput {
+  boardId: String
+  closed: Boolean
+  name: String
+  rank: String
+}
+
+type Mutation {
+  createList(boardId: String!, name: String!, rank: String!): List!
+  updateList(id: ID!, updateInput: ListUpdateInput!): List!
+}

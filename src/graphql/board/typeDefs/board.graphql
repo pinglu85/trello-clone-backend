@@ -1,0 +1,30 @@
+scalar Date
+
+type Board {
+  id: ID!
+  backgroundColor: String
+  backgroundImage: String
+  closed: Boolean!
+  createdAt: Date!
+  lists: [List!]!
+  name: String!
+  updatedAt: Date!
+  version: Int!
+}
+
+type Query {
+  boards(closed: Boolean!): [Board!]!
+  board(id: ID!): Board!
+}
+
+input BoardUpdateInput {
+  background: String
+  closed: Boolean
+  name: String
+}
+
+type Mutation {
+  createBoard(name: String!, background: String!): Board!
+  deleteBoard(id: ID!): Boolean!
+  updateBoard(id: ID!, updateInput: BoardUpdateInput!): Board!
+}
