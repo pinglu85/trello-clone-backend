@@ -1,0 +1,15 @@
+schema: './src/graphql/**/typeDefs/*.graphql'
+generates:
+  ./src/graphql/:
+    preset: graphql-modules
+    presetConfig:
+      baseTypesPath: ./generatedTypes/graphql.ts # Where to create the complete schema types
+      filename: generatedTypes/moduleTypes.ts # Where to create each module types. Note: Currently we'll get incorrect import path for `graphql.ts`
+    config:
+      useIndexSignature: true
+      defaultMapper: Partial<{T}>
+    plugins:
+      - add:
+          content: '/* eslint-disable */'
+      - typescript
+      - typescript-resolvers
