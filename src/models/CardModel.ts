@@ -106,3 +106,5 @@ class CardModel {
 }
 
 export default CardModel;
+
+export type { Card };

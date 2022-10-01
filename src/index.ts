@@ -13,6 +13,7 @@ import type { IResolvers } from '@graphql-tools/utils';
 import pgPool from './models/pgPool';
 import camelCaseFieldResolver from './utils/camelCaseFieldResolver';
 import { typeDefs, resolvers } from './graphql';
+import createWelcomeBoard from './createWelcomeBoard';
 
 dotenv.config();
 
@@ -55,6 +56,9 @@ async function startApolloServer(
 
     await server.start();
     server.applyMiddleware({ app, path: '/' });
+
+    const { rows } = await pgPool.query('SELECT COUNT(*) FROM boards');
+    if (rows.length && rows[0].count === '0') await createWelcomeBoard();
 
     const PORT = process.env.PORT || 8000;
     await new Promise<void>((resolve) =>
