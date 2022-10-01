@@ -37,7 +37,9 @@ class CardModel {
         cards
       WHERE 
         list_id = $1
-        AND closed = false;
+        AND closed = false
+      ORDER BY
+        rank;    
     `;
 
     const { rows } = await pgPool.query<Card>(query, [listId]);
