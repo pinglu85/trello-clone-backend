@@ -11,7 +11,7 @@ import type { DocumentNode } from 'graphql';
 import type { IResolvers } from '@graphql-tools/utils';
 
 import pgPool from './models/pgPool';
-import camelCaseFieldResolver from './utils/camelCaseFieldResolver';
+import snakeCaseFieldResolver from './utils/snakeCaseFieldResolver';
 import { typeDefs, resolvers } from './graphql';
 import createWelcomeBoard from './createWelcomeBoard';
 
@@ -46,7 +46,7 @@ async function startApolloServer(
 
     const server = new ApolloServer({
       introspection: process.env.NODE_ENV !== 'production',
-      fieldResolver: camelCaseFieldResolver,
+      fieldResolver: snakeCaseFieldResolver,
       typeDefs,
       resolvers,
       csrfPrevention: true,
