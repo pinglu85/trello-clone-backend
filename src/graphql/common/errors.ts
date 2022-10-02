@@ -1,10 +1,10 @@
 import { ApolloError, UserInputError } from 'apollo-server-express';
 
-export const ErrEditConflict = new ApolloError('Edit conflict');
+export const ErrorEditConflict = new ApolloError('Edit conflict');
 
-export const ErrNotFound = new ApolloError('Item not found');
+export const ErrorNotFound = new ApolloError('Item not found');
 
-export const generateErrUpdateOnClosedItem = (
+export const generateErrorUpdateOnClosedItem = (
   itemName: string
 ): UserInputError => {
   return new UserInputError(

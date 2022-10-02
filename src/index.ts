@@ -67,8 +67,8 @@ async function startApolloServer(
     console.log(
       `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
     );
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
     pgPool.close();
   }
 }
