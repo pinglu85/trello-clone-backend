@@ -1,6 +1,6 @@
 import BoardModel from '../../models/BoardModel';
 import getBoardBackground from './utils/gerBoardBackground';
-import { ErrorEditConflict, ErrorNotFound } from '../common/errors';
+import { ERROR_EDIT_CONFLICT, ERROR_NOT_FOUND } from '../../constants/errors';
 import ListModel from '../../models/ListModel';
 import type { BoardModule } from './generatedTypes/moduleTypes';
 
@@ -11,7 +11,7 @@ const Query: BoardModule.QueryResolvers = {
 
   board: async (_, { id }) => {
     const board = await BoardModel.get(id);
-    if (!board) throw ErrorNotFound;
+    if (!board) throw ERROR_NOT_FOUND;
 
     return board;
   },
@@ -30,7 +30,7 @@ const Mutation: BoardModule.MutationResolvers = {
 
   updateBoard: async (_, { id, updateInput: { background, closed, name } }) => {
     const board = await BoardModel.get(id);
-    if (!board) throw ErrorNotFound;
+    if (!board) throw ERROR_NOT_FOUND;
 
     if (background) {
       const { backgroundColor, backgroundImage } =
@@ -44,7 +44,7 @@ const Mutation: BoardModule.MutationResolvers = {
     if (name) board.name = name;
 
     const updatedBoard = await BoardModel.update(board);
-    if (!updatedBoard) throw ErrorEditConflict;
+    if (!updatedBoard) throw ERROR_EDIT_CONFLICT;
 
     return updatedBoard;
   },
