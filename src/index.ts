@@ -25,17 +25,20 @@ async function startApolloServer(
   const httpServer = http.createServer(app);
 
   let databaseUrl;
+  let clientUrl;
   const apolloServerPlugins = [
     ApolloServerPluginDrainHttpServer({ httpServer }),
   ];
 
   if (process.env.NODE_ENV === 'development') {
     databaseUrl = process.env.DATABASE_URL_DEV as string;
+    clientUrl = process.env.CLIENT_URL_DEV as string;
     apolloServerPlugins.push(
       ApolloServerPluginLandingPageLocalDefault({ embed: true })
     );
   } else {
     databaseUrl = process.env.DATABASE_URL_CLOUD as string;
+    clientUrl = process.env.CLIENT_URL_PROD as string;
     apolloServerPlugins.push(
       ApolloServerPluginLandingPageProductionDefault({ embed: false })
     );
@@ -55,7 +58,14 @@ async function startApolloServer(
     });
 
     await server.start();
-    server.applyMiddleware({ app, path: '/' });
+
+    server.applyMiddleware({
+      app,
+      cors: {
+        origin: [clientUrl],
+      },
+      path: '/',
+    });
 
     const { rows } = await pgPool.query('SELECT COUNT(*) FROM boards');
     if (rows.length && rows[0].count === '0') await createWelcomeBoard();
