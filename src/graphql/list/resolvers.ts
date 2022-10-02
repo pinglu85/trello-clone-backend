@@ -1,8 +1,8 @@
 import ListModel from '../../models/ListModel';
 import {
-  ErrEditConflict,
-  ErrNotFound,
-  generateErrUpdateOnClosedItem,
+  ErrorEditConflict,
+  ErrorNotFound,
+  generateErrorUpdateOnClosedItem,
 } from '../common/errors';
 import CardModel from '../../models/CardModel';
 import type { ListModule } from './generatedTypes/moduleTypes';
@@ -14,7 +14,7 @@ const Query: ListModule.QueryResolvers = {
 
   list: async (_, { id }) => {
     const list = await ListModel.get(id);
-    if (!list) throw ErrNotFound;
+    if (!list) throw ErrorNotFound;
 
     return list;
   },
@@ -30,9 +30,9 @@ const Mutation: ListModule.MutationResolvers = {
     { id, updateInput: { boardId, closed, name, rank } }
   ) => {
     const list = await ListModel.get(id);
-    if (!list) throw ErrNotFound;
+    if (!list) throw ErrorNotFound;
 
-    if (list.closed) throw generateErrUpdateOnClosedItem('list');
+    if (list.closed) throw generateErrorUpdateOnClosedItem('list');
 
     if (boardId && rank) {
       list.boardId = boardId;
@@ -44,7 +44,7 @@ const Mutation: ListModule.MutationResolvers = {
     if (name) list.name = name;
 
     const updatedList = await ListModel.update(list);
-    if (!updatedList) throw ErrEditConflict;
+    if (!updatedList) throw ErrorEditConflict;
 
     return updatedList;
   },

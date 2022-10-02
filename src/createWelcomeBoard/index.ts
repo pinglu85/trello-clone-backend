@@ -19,8 +19,8 @@ async function createWelcomeBoard(): Promise<void> {
     }
 
     await Promise.all(createCardsPromises);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 }
 
