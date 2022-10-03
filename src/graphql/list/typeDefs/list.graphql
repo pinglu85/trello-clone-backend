@@ -13,7 +13,7 @@ type List {
 }
 
 type Query {
-  lists(boardId: ID!): [List!]!
+  lists(boardId: String!): [List!]!
   list(id: ID!): List!
 }
 
