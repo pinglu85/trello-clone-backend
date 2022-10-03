@@ -170,7 +170,7 @@ export type QueryListArgs = {
 
 
 export type QueryListsArgs = {
-  boardId: Scalars['ID'];
+  boardId: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
