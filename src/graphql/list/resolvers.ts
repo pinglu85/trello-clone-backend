@@ -22,10 +22,7 @@ const Mutation: ListModule.MutationResolvers = {
     return ListModel.insert(boardId, name, rank);
   },
 
-  updateList: async (
-    _,
-    { id, updateInput: { boardId, closed, name, rank } }
-  ) => {
+  updateList: async (_, { id, updates: { boardId, closed, name, rank } }) => {
     const list = await ListModel.get(id);
     if (!list) throw ERROR_NOT_FOUND;
 

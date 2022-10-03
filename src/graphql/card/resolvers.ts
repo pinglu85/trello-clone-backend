@@ -23,7 +23,7 @@ const Mutation: CardModule.MutationResolvers = {
 
   updateCard: async (
     _,
-    { id, updateInput: { boardId, closed, description, listId, name, rank } }
+    { id, updates: { boardId, closed, description, listId, name, rank } }
   ) => {
     const card = await CardModel.get(id);
     if (!card) throw ERROR_NOT_FOUND;

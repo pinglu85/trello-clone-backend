@@ -18,15 +18,15 @@ export namespace BoardModule {
   }
 
   interface DefinedInputFields {
-    BoardUpdateInput: 'background' | 'closed' | 'name';
+    BoardUpdates: 'background' | 'closed' | 'name';
   }
 
   export type Board = Pick<Types.Board, DefinedFields['Board']>;
   export type List = Types.List;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
-  export type BoardUpdateInput = Pick<
-    Types.BoardUpdateInput,
-    DefinedInputFields['BoardUpdateInput']
+  export type BoardUpdates = Pick<
+    Types.BoardUpdates,
+    DefinedInputFields['BoardUpdates']
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
