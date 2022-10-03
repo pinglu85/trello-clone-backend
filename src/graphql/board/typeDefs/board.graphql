@@ -17,7 +17,7 @@ type Query {
   board(id: ID!): Board!
 }
 
-input BoardUpdateInput {
+input BoardUpdates {
   background: String
   closed: Boolean
   name: String
@@ -26,5 +26,5 @@ input BoardUpdateInput {
 type Mutation {
   createBoard(name: String!, background: String!): Board!
   deleteBoard(id: ID!): Boolean!
-  updateBoard(id: ID!, updateInput: BoardUpdateInput!): Board!
+  updateBoard(id: ID!, updates: BoardUpdates!): Board!
 }

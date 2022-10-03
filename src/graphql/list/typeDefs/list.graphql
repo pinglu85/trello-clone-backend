@@ -17,7 +17,7 @@ type Query {
   list(id: ID!): List!
 }
 
-input ListUpdateInput {
+input ListUpdates {
   boardId: String
   closed: Boolean
   name: String
@@ -26,5 +26,5 @@ input ListUpdateInput {
 
 type Mutation {
   createList(boardId: String!, name: String!, rank: String!): List!
-  updateList(id: ID!, updateInput: ListUpdateInput!): List!
+  updateList(id: ID!, updates: ListUpdates!): List!
 }

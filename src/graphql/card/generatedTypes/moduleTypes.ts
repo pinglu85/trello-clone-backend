@@ -19,7 +19,7 @@ export namespace CardModule {
   }
 
   interface DefinedInputFields {
-    CardUpdateInput:
+    CardUpdates:
       | 'boardId'
       | 'closed'
       | 'description'
@@ -30,9 +30,9 @@ export namespace CardModule {
 
   export type Card = Pick<Types.Card, DefinedFields['Card']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
-  export type CardUpdateInput = Pick<
-    Types.CardUpdateInput,
-    DefinedInputFields['CardUpdateInput']
+  export type CardUpdates = Pick<
+    Types.CardUpdates,
+    DefinedInputFields['CardUpdates']
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 

@@ -28,7 +28,7 @@ const Mutation: BoardModule.MutationResolvers = {
     return BoardModel.delete(id);
   },
 
-  updateBoard: async (_, { id, updateInput: { background, closed, name } }) => {
+  updateBoard: async (_, { id, updates: { background, closed, name } }) => {
     const board = await BoardModel.get(id);
     if (!board) throw ERROR_NOT_FOUND;
 

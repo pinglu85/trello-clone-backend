@@ -29,7 +29,7 @@ export type Board = {
   version: Scalars['Int'];
 };
 
-export type BoardUpdateInput = {
+export type BoardUpdates = {
   background?: InputMaybe<Scalars['String']>;
   closed?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
@@ -49,7 +49,7 @@ export type Card = {
   version: Scalars['Int'];
 };
 
-export type CardUpdateInput = {
+export type CardUpdates = {
   boardId?: InputMaybe<Scalars['String']>;
   closed?: InputMaybe<Scalars['Boolean']>;
   description?: InputMaybe<Scalars['String']>;
@@ -71,7 +71,7 @@ export type List = {
   version: Scalars['Int'];
 };
 
-export type ListUpdateInput = {
+export type ListUpdates = {
   boardId?: InputMaybe<Scalars['String']>;
   closed?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
@@ -118,19 +118,19 @@ export type MutationDeleteBoardArgs = {
 
 export type MutationUpdateBoardArgs = {
   id: Scalars['ID'];
-  updateInput: BoardUpdateInput;
+  updates: BoardUpdates;
 };
 
 
 export type MutationUpdateCardArgs = {
   id: Scalars['ID'];
-  updateInput: CardUpdateInput;
+  updates: CardUpdates;
 };
 
 
 export type MutationUpdateListArgs = {
   id: Scalars['ID'];
-  updateInput: ListUpdateInput;
+  updates: ListUpdates;
 };
 
 export type Query = {
@@ -170,7 +170,7 @@ export type QueryListArgs = {
 
 
 export type QueryListsArgs = {
-  boardId: Scalars['ID'];
+  boardId: Scalars['String'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -244,15 +244,15 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
   Board: ResolverTypeWrapper<Partial<Board>>;
-  BoardUpdateInput: ResolverTypeWrapper<Partial<BoardUpdateInput>>;
+  BoardUpdates: ResolverTypeWrapper<Partial<BoardUpdates>>;
   Boolean: ResolverTypeWrapper<Partial<Scalars['Boolean']>>;
   Card: ResolverTypeWrapper<Partial<Card>>;
-  CardUpdateInput: ResolverTypeWrapper<Partial<CardUpdateInput>>;
+  CardUpdates: ResolverTypeWrapper<Partial<CardUpdates>>;
   Date: ResolverTypeWrapper<Partial<Scalars['Date']>>;
   ID: ResolverTypeWrapper<Partial<Scalars['ID']>>;
   Int: ResolverTypeWrapper<Partial<Scalars['Int']>>;
   List: ResolverTypeWrapper<Partial<List>>;
-  ListUpdateInput: ResolverTypeWrapper<Partial<ListUpdateInput>>;
+  ListUpdates: ResolverTypeWrapper<Partial<ListUpdates>>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Partial<Scalars['String']>>;
@@ -261,15 +261,15 @@ export type ResolversTypes = ResolversObject<{
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
   Board: Partial<Board>;
-  BoardUpdateInput: Partial<BoardUpdateInput>;
+  BoardUpdates: Partial<BoardUpdates>;
   Boolean: Partial<Scalars['Boolean']>;
   Card: Partial<Card>;
-  CardUpdateInput: Partial<CardUpdateInput>;
+  CardUpdates: Partial<CardUpdates>;
   Date: Partial<Scalars['Date']>;
   ID: Partial<Scalars['ID']>;
   Int: Partial<Scalars['Int']>;
   List: Partial<List>;
-  ListUpdateInput: Partial<ListUpdateInput>;
+  ListUpdates: Partial<ListUpdates>;
   Mutation: {};
   Query: {};
   String: Partial<Scalars['String']>;
@@ -324,9 +324,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'boardId' | 'listId' | 'name' | 'rank'>>;
   createList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationCreateListArgs, 'boardId' | 'name' | 'rank'>>;
   deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'id'>>;
-  updateBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardArgs, 'id' | 'updateInput'>>;
-  updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'id' | 'updateInput'>>;
-  updateList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationUpdateListArgs, 'id' | 'updateInput'>>;
+  updateBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardArgs, 'id' | 'updates'>>;
+  updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'id' | 'updates'>>;
+  updateList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationUpdateListArgs, 'id' | 'updates'>>;
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{

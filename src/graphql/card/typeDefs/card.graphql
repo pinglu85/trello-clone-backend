@@ -18,7 +18,7 @@ type Query {
   card(id: ID!): Card!
 }
 
-input CardUpdateInput {
+input CardUpdates {
   boardId: String
   closed: Boolean
   description: String
@@ -34,5 +34,5 @@ type Mutation {
     name: String!
     rank: String!
   ): Card!
-  updateCard(id: ID!, updateInput: CardUpdateInput!): Card!
+  updateCard(id: ID!, updates: CardUpdates!): Card!
 }

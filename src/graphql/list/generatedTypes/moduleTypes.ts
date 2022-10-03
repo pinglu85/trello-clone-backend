@@ -18,15 +18,15 @@ export namespace ListModule {
   }
 
   interface DefinedInputFields {
-    ListUpdateInput: 'boardId' | 'closed' | 'name' | 'rank';
+    ListUpdates: 'boardId' | 'closed' | 'name' | 'rank';
   }
 
   export type List = Pick<Types.List, DefinedFields['List']>;
   export type Card = Types.Card;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
-  export type ListUpdateInput = Pick<
-    Types.ListUpdateInput,
-    DefinedInputFields['ListUpdateInput']
+  export type ListUpdates = Pick<
+    Types.ListUpdates,
+    DefinedInputFields['ListUpdates']
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
