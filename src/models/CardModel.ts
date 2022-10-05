@@ -79,7 +79,7 @@ class CardModel {
         board_id = $1,
         closed = $2,
         description = $3,
-        list_id = $4
+        list_id = $4,
         name = $5,
         rank = $6,
         updated_at = CURRENT_TIMESTAMP,
