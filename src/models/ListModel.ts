@@ -15,7 +15,14 @@ class ListModel {
   static async get(id: string): Promise<List | null> {
     const query = `
       SELECT
-        *
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version
       FROM
         lists
       WHERE
@@ -30,7 +37,14 @@ class ListModel {
   static async getAll(boardId: string): Promise<List[]> {
     const query = `
       SELECT
-        *
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version
       FROM
         lists
       WHERE
@@ -55,7 +69,15 @@ class ListModel {
         lists (board_id, name, rank)
       VALUES 
         ($1, $2, $3)  
-      RETURNING *;
+      RETURNING 
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
     `;
 
     const { rows } = await pgPool.query<List>(query, [boardId, name, rank]);
@@ -77,7 +99,15 @@ class ListModel {
       WHERE
         id = $5 
         AND version = $6
-      RETURNING *;
+      RETURNING 
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
     `;
 
     const { rows } = await pgPool.query<List>(query, [
