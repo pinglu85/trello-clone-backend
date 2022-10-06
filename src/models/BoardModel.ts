@@ -15,7 +15,14 @@ class BoardModel {
   static async get(id: string): Promise<Board | null> {
     const query = `
       SELECT
-        *
+        id,    
+        background_color AS "backgroundColor",
+        background_image AS "backgroundImage",
+        closed,
+        created_at AS "createdAt",
+        name,
+        updated_at AS "updatedAt",
+        version
       FROM
         boards
       WHERE
@@ -30,7 +37,14 @@ class BoardModel {
   static async getAll(closed: boolean): Promise<Board[]> {
     const query = `
       SELECT
-        *
+        id,    
+        background_color AS "backgroundColor",
+        background_image AS "backgroundImage",
+        closed,
+        created_at AS "createdAt",
+        name,
+        updated_at AS "updatedAt",
+        version
       FROM
         boards
       WHERE
@@ -52,7 +66,15 @@ class BoardModel {
         boards (background_color, background_image, name)
       VALUES 
         ($1, $2, $3)  
-      RETURNING *;
+      RETURNING 
+        id,    
+        background_color AS "backgroundColor",
+        background_image AS "backgroundImage",
+        closed,
+        created_at AS "createdAt",
+        name,
+        updated_at AS "updatedAt",
+        version;
     `;
 
     const { rows } = await pgPool.query<Board>(query, [
@@ -78,7 +100,15 @@ class BoardModel {
       WHERE
         id = $5 
         AND version = $6
-      RETURNING *;
+      RETURNING 
+        id,    
+        background_color AS "backgroundColor",
+        background_image AS "backgroundImage",
+        closed,
+        created_at AS "createdAt",
+        name,
+        updated_at AS "updatedAt",
+        version;
     `;
 
     const { rows } = await pgPool.query<Board>(query, [

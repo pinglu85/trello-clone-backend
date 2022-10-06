@@ -17,7 +17,16 @@ class CardModel {
   static async get(id: string): Promise<Card | null> {
     const query = `
       SELECT
-        *
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        description,
+        list_id AS "listId",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version
       FROM
         cards
       WHERE
@@ -32,7 +41,16 @@ class CardModel {
   static async getAll(listId: string): Promise<Card[]> {
     const query = `
       SELECT
-        *
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        description,
+        list_id AS "listId",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version
       FROM
         cards
       WHERE 
@@ -58,7 +76,17 @@ class CardModel {
         cards (board_id, list_id, name, rank)
       VALUES 
         ($1, $2, $3, $4)  
-      RETURNING *;
+      RETURNING 
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        description,
+        list_id AS "listId",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
     `;
 
     const { rows } = await pgPool.query<Card>(query, [
@@ -87,7 +115,17 @@ class CardModel {
       WHERE
         id = $7 
         AND version = $8
-      RETURNING *;
+      RETURNING  
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        description,
+        list_id AS "listId",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
     `;
 
     const { rows } = await pgPool.query<Card>(query, [
