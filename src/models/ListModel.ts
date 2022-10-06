@@ -13,7 +13,7 @@ interface List {
 
 class ListModel {
   static async get(id: string): Promise<List | null> {
-    const query = `
+    const query = `--sql
       SELECT
         id,
         board_id AS "boardId",
@@ -35,7 +35,7 @@ class ListModel {
   }
 
   static async getAll(boardId: string): Promise<List[]> {
-    const query = `
+    const query = `--sql
       SELECT
         id,
         board_id AS "boardId",
@@ -64,12 +64,12 @@ class ListModel {
     name: string,
     rank: string
   ): Promise<List> {
-    const query = `
-      INSERT INTO 
+    const query = `--sql
+      INSERT INTO
         lists (board_id, name, rank)
-      VALUES 
-        ($1, $2, $3)  
-      RETURNING 
+      VALUES
+        ($1, $2, $3)
+      RETURNING
         id,
         board_id AS "boardId",
         closed,
@@ -86,7 +86,7 @@ class ListModel {
   }
 
   static async update(list: List): Promise<List | null> {
-    const query = `
+    const query = `--sql
       UPDATE
         lists
       SET
@@ -97,9 +97,9 @@ class ListModel {
         updated_at = CURRENT_TIMESTAMP,
         version = version + 1
       WHERE
-        id = $5 
+        id = $5
         AND version = $6
-      RETURNING 
+      RETURNING
         id,
         board_id AS "boardId",
         closed,

@@ -13,9 +13,9 @@ interface Board {
 
 class BoardModel {
   static async get(id: string): Promise<Board | null> {
-    const query = `
+    const query = `--sql
       SELECT
-        id,    
+        id,
         background_color AS "backgroundColor",
         background_image AS "backgroundImage",
         closed,
@@ -35,9 +35,9 @@ class BoardModel {
   }
 
   static async getAll(closed: boolean): Promise<Board[]> {
-    const query = `
+    const query = `--sql
       SELECT
-        id,    
+        id,
         background_color AS "backgroundColor",
         background_image AS "backgroundImage",
         closed,
@@ -48,7 +48,7 @@ class BoardModel {
       FROM
         boards
       WHERE
-        closed = $1;  
+        closed = $1;
     `;
 
     const { rows } = await pgPool.query<Board>(query, [closed]);
@@ -61,13 +61,13 @@ class BoardModel {
     backgroundImage: string | null,
     name: string
   ): Promise<Board> {
-    const query = `
-      INSERT INTO 
+    const query = `--sql
+      INSERT INTO
         boards (background_color, background_image, name)
-      VALUES 
-        ($1, $2, $3)  
-      RETURNING 
-        id,    
+      VALUES
+        ($1, $2, $3)
+      RETURNING
+        id,
         background_color AS "backgroundColor",
         background_image AS "backgroundImage",
         closed,
@@ -87,7 +87,7 @@ class BoardModel {
   }
 
   static async update(board: Board): Promise<Board | null> {
-    const query = `
+    const query = `--sql
       UPDATE
         boards
       SET
@@ -98,10 +98,10 @@ class BoardModel {
         updated_at = CURRENT_TIMESTAMP,
         version = version + 1
       WHERE
-        id = $5 
+        id = $5
         AND version = $6
-      RETURNING 
-        id,    
+      RETURNING
+        id,
         background_color AS "backgroundColor",
         background_image AS "backgroundImage",
         closed,
@@ -124,7 +124,7 @@ class BoardModel {
   }
 
   static async delete(id: string): Promise<boolean> {
-    const query = `
+    const query = `--sql
       DELETE FROM
         boards
       WHERE

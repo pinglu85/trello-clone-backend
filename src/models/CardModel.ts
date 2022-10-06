@@ -15,7 +15,7 @@ interface Card {
 
 class CardModel {
   static async get(id: string): Promise<Card | null> {
-    const query = `
+    const query = `--sql
       SELECT
         id,
         board_id AS "boardId",
@@ -39,7 +39,7 @@ class CardModel {
   }
 
   static async getAll(listId: string): Promise<Card[]> {
-    const query = `
+    const query = `--sql
       SELECT
         id,
         board_id AS "boardId",
@@ -53,7 +53,7 @@ class CardModel {
         version
       FROM
         cards
-      WHERE 
+      WHERE
         list_id = $1
         AND closed = false
       ORDER BY
@@ -71,12 +71,12 @@ class CardModel {
     name: string,
     rank: string
   ): Promise<Card> {
-    const query = `
-      INSERT INTO 
+    const query = `--sql
+      INSERT INTO
         cards (board_id, list_id, name, rank)
-      VALUES 
-        ($1, $2, $3, $4)  
-      RETURNING 
+      VALUES
+        ($1, $2, $3, $4)
+      RETURNING
         id,
         board_id AS "boardId",
         closed,
@@ -100,7 +100,7 @@ class CardModel {
   }
 
   static async update(card: Card): Promise<Card | null> {
-    const query = `
+    const query = `--sql
       UPDATE
         cards
       SET
@@ -113,9 +113,9 @@ class CardModel {
         updated_at = CURRENT_TIMESTAMP,
         version = version + 1
       WHERE
-        id = $7 
+        id = $7
         AND version = $8
-      RETURNING  
+      RETURNING
         id,
         board_id AS "boardId",
         closed,
