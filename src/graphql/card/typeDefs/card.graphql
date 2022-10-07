@@ -18,13 +18,20 @@ type Query {
   card(id: ID!): Card!
 }
 
+type MoveCardResult {
+  id: ID!
+  boardId: String!
+  listId: String!
+  oldBoardId: String!
+  oldListId: String!
+  rank: String!
+  version: Int!
+}
+
 input CardUpdates {
-  boardId: String
   closed: Boolean
   description: String
-  listId: String
   name: String
-  rank: String
 }
 
 type Mutation {
@@ -34,5 +41,13 @@ type Mutation {
     name: String!
     rank: String!
   ): Card!
+
+  moveCard(
+    id: ID!
+    boardId: String!
+    listId: String!
+    rank: String!
+  ): MoveCardResult!
+
   updateCard(id: ID!, updates: CardUpdates!): Card!
 }

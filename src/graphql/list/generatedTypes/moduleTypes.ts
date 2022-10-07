@@ -14,16 +14,21 @@ export namespace ListModule {
       | 'updatedAt'
       | 'version';
     Query: 'lists' | 'list';
-    Mutation: 'createList' | 'updateList';
+    MoveListResult: 'id' | 'boardId' | 'oldBoardId' | 'rank' | 'version';
+    Mutation: 'createList' | 'moveList' | 'updateList';
   }
 
   interface DefinedInputFields {
-    ListUpdates: 'boardId' | 'closed' | 'name' | 'rank';
+    ListUpdates: 'closed' | 'name';
   }
 
   export type List = Pick<Types.List, DefinedFields['List']>;
   export type Card = Types.Card;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
+  export type MoveListResult = Pick<
+    Types.MoveListResult,
+    DefinedFields['MoveListResult']
+  >;
   export type ListUpdates = Pick<
     Types.ListUpdates,
     DefinedInputFields['ListUpdates']
@@ -41,6 +46,10 @@ export namespace ListModule {
     Types.QueryResolvers,
     DefinedFields['Query']
   >;
+  export type MoveListResultResolvers = Pick<
+    Types.MoveListResultResolvers,
+    DefinedFields['MoveListResult'] | '__isTypeOf'
+  >;
   export type MutationResolvers = Pick<
     Types.MutationResolvers,
     DefinedFields['Mutation']
@@ -49,6 +58,7 @@ export namespace ListModule {
   export interface Resolvers {
     List?: ListResolvers;
     Query?: QueryResolvers;
+    MoveListResult?: MoveListResultResolvers;
     Mutation?: MutationResolvers;
     Date?: Types.Resolvers['Date'];
   }
@@ -74,9 +84,18 @@ export namespace ListModule {
       lists?: gm.Middleware[];
       list?: gm.Middleware[];
     };
+    MoveListResult?: {
+      '*'?: gm.Middleware[];
+      id?: gm.Middleware[];
+      boardId?: gm.Middleware[];
+      oldBoardId?: gm.Middleware[];
+      rank?: gm.Middleware[];
+      version?: gm.Middleware[];
+    };
     Mutation?: {
       '*'?: gm.Middleware[];
       createList?: gm.Middleware[];
+      moveList?: gm.Middleware[];
       updateList?: gm.Middleware[];
     };
   }

@@ -22,16 +22,33 @@ const Mutation: ListModule.MutationResolvers = {
     return ListModel.insert(boardId, name, rank);
   },
 
-  updateList: async (_, { id, updates: { boardId, closed, name, rank } }) => {
+  moveList: async (_, { id, boardId, rank }) => {
     const list = await ListModel.get(id);
     if (!list) throw ERROR_NOT_FOUND;
 
     if (list.closed) throw generateErrorUpdateOnClosedItem('list');
 
-    if (boardId && rank) {
-      list.boardId = boardId;
-      list.rank = rank;
-    }
+    const oldBoardId = list.boardId;
+    list.boardId = boardId;
+    list.rank = rank;
+
+    const updatedList = await ListModel.update(list);
+    if (!updatedList) throw ERROR_EDIT_CONFLICT;
+
+    return {
+      id,
+      boardId: updatedList.boardId,
+      oldBoardId,
+      rank: updatedList.rank,
+      version: updatedList.version,
+    };
+  },
+
+  updateList: async (_, { id, updates: { closed, name } }) => {
+    const list = await ListModel.get(id);
+    if (!list) throw ERROR_NOT_FOUND;
+
+    if (list.closed) throw generateErrorUpdateOnClosedItem('list');
 
     if (closed) list.closed = closed;
 
