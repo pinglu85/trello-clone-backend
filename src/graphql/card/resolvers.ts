@@ -21,20 +21,37 @@ const Mutation: CardModule.MutationResolvers = {
     return CardModel.insert(boardId, listId, name, rank);
   },
 
-  updateCard: async (
-    _,
-    { id, updates: { boardId, closed, description, listId, name, rank } }
-  ) => {
+  moveCard: async (_, { id, boardId, listId, rank }) => {
     const card = await CardModel.get(id);
     if (!card) throw ERROR_NOT_FOUND;
 
     if (card.closed) throw generateErrorUpdateOnClosedItem('card');
 
-    if (boardId && listId && rank) {
-      card.boardId = boardId;
-      card.listId = listId;
-      card.rank = rank;
-    }
+    const oldBoardId = card.boardId;
+    const oldListId = card.listId;
+    card.boardId = boardId;
+    card.listId = listId;
+    card.rank = rank;
+
+    const updatedCard = await CardModel.update(card);
+    if (!updatedCard) throw ERROR_EDIT_CONFLICT;
+
+    return {
+      id,
+      boardId: updatedCard.boardId,
+      listId: updatedCard.listId,
+      oldBoardId,
+      oldListId,
+      rank: updatedCard.rank,
+      version: updatedCard.version,
+    };
+  },
+
+  updateCard: async (_, { id, updates: { closed, description, name } }) => {
+    const card = await CardModel.get(id);
+    if (!card) throw ERROR_NOT_FOUND;
+
+    if (card.closed) throw generateErrorUpdateOnClosedItem('card');
 
     if (closed) card.closed = closed;
 

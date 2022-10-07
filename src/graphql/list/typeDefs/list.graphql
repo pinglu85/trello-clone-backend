@@ -17,14 +17,21 @@ type Query {
   list(id: ID!): List!
 }
 
+type MoveListResult {
+  id: ID!
+  boardId: String!
+  oldBoardId: String!
+  rank: String!
+  version: Int!
+}
+
 input ListUpdates {
-  boardId: String
   closed: Boolean
   name: String
-  rank: String
 }
 
 type Mutation {
   createList(boardId: String!, name: String!, rank: String!): List!
+  moveList(id: ID!, boardId: String!, rank: String!): MoveListResult!
   updateList(id: ID!, updates: ListUpdates!): List!
 }

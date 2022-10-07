@@ -50,12 +50,9 @@ export type Card = {
 };
 
 export type CardUpdates = {
-  boardId?: InputMaybe<Scalars['String']>;
   closed?: InputMaybe<Scalars['Boolean']>;
   description?: InputMaybe<Scalars['String']>;
-  listId?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
-  rank?: InputMaybe<Scalars['String']>;
 };
 
 export type List = {
@@ -72,10 +69,28 @@ export type List = {
 };
 
 export type ListUpdates = {
-  boardId?: InputMaybe<Scalars['String']>;
   closed?: InputMaybe<Scalars['Boolean']>;
   name?: InputMaybe<Scalars['String']>;
-  rank?: InputMaybe<Scalars['String']>;
+};
+
+export type MoveCardResult = {
+  __typename?: 'MoveCardResult';
+  boardId: Scalars['String'];
+  id: Scalars['ID'];
+  listId: Scalars['String'];
+  oldBoardId: Scalars['String'];
+  oldListId: Scalars['String'];
+  rank: Scalars['String'];
+  version: Scalars['Int'];
+};
+
+export type MoveListResult = {
+  __typename?: 'MoveListResult';
+  boardId: Scalars['String'];
+  id: Scalars['ID'];
+  oldBoardId: Scalars['String'];
+  rank: Scalars['String'];
+  version: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -84,6 +99,8 @@ export type Mutation = {
   createCard: Card;
   createList: List;
   deleteBoard: Scalars['Boolean'];
+  moveCard: MoveCardResult;
+  moveList: MoveListResult;
   updateBoard: Board;
   updateCard: Card;
   updateList: List;
@@ -113,6 +130,21 @@ export type MutationCreateListArgs = {
 
 export type MutationDeleteBoardArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationMoveCardArgs = {
+  boardId: Scalars['String'];
+  id: Scalars['ID'];
+  listId: Scalars['String'];
+  rank: Scalars['String'];
+};
+
+
+export type MutationMoveListArgs = {
+  boardId: Scalars['String'];
+  id: Scalars['ID'];
+  rank: Scalars['String'];
 };
 
 
@@ -253,6 +285,8 @@ export type ResolversTypes = ResolversObject<{
   Int: ResolverTypeWrapper<Partial<Scalars['Int']>>;
   List: ResolverTypeWrapper<Partial<List>>;
   ListUpdates: ResolverTypeWrapper<Partial<ListUpdates>>;
+  MoveCardResult: ResolverTypeWrapper<Partial<MoveCardResult>>;
+  MoveListResult: ResolverTypeWrapper<Partial<MoveListResult>>;
   Mutation: ResolverTypeWrapper<{}>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Partial<Scalars['String']>>;
@@ -270,6 +304,8 @@ export type ResolversParentTypes = ResolversObject<{
   Int: Partial<Scalars['Int']>;
   List: Partial<List>;
   ListUpdates: Partial<ListUpdates>;
+  MoveCardResult: Partial<MoveCardResult>;
+  MoveListResult: Partial<MoveListResult>;
   Mutation: {};
   Query: {};
   String: Partial<Scalars['String']>;
@@ -319,11 +355,33 @@ export type ListResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type MoveCardResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveCardResult'] = ResolversParentTypes['MoveCardResult']> = ResolversObject<{
+  boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  listId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  oldBoardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  oldListId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type MoveListResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveListResult'] = ResolversParentTypes['MoveListResult']> = ResolversObject<{
+  boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  oldBoardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'background' | 'name'>>;
   createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'boardId' | 'listId' | 'name' | 'rank'>>;
   createList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationCreateListArgs, 'boardId' | 'name' | 'rank'>>;
   deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'id'>>;
+  moveCard?: Resolver<ResolversTypes['MoveCardResult'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'boardId' | 'id' | 'listId' | 'rank'>>;
+  moveList?: Resolver<ResolversTypes['MoveListResult'], ParentType, ContextType, RequireFields<MutationMoveListArgs, 'boardId' | 'id' | 'rank'>>;
   updateBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardArgs, 'id' | 'updates'>>;
   updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'id' | 'updates'>>;
   updateList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationUpdateListArgs, 'id' | 'updates'>>;
@@ -343,6 +401,8 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Card?: CardResolvers<ContextType>;
   Date?: GraphQLScalarType;
   List?: ListResolvers<ContextType>;
+  MoveCardResult?: MoveCardResultResolvers<ContextType>;
+  MoveListResult?: MoveListResultResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
 }>;

@@ -15,21 +15,27 @@ export namespace CardModule {
       | 'updatedAt'
       | 'version';
     Query: 'cards' | 'card';
-    Mutation: 'createCard' | 'updateCard';
+    MoveCardResult:
+      | 'id'
+      | 'boardId'
+      | 'listId'
+      | 'oldBoardId'
+      | 'oldListId'
+      | 'rank'
+      | 'version';
+    Mutation: 'createCard' | 'moveCard' | 'updateCard';
   }
 
   interface DefinedInputFields {
-    CardUpdates:
-      | 'boardId'
-      | 'closed'
-      | 'description'
-      | 'listId'
-      | 'name'
-      | 'rank';
+    CardUpdates: 'closed' | 'description' | 'name';
   }
 
   export type Card = Pick<Types.Card, DefinedFields['Card']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
+  export type MoveCardResult = Pick<
+    Types.MoveCardResult,
+    DefinedFields['MoveCardResult']
+  >;
   export type CardUpdates = Pick<
     Types.CardUpdates,
     DefinedInputFields['CardUpdates']
@@ -47,6 +53,10 @@ export namespace CardModule {
     Types.QueryResolvers,
     DefinedFields['Query']
   >;
+  export type MoveCardResultResolvers = Pick<
+    Types.MoveCardResultResolvers,
+    DefinedFields['MoveCardResult'] | '__isTypeOf'
+  >;
   export type MutationResolvers = Pick<
     Types.MutationResolvers,
     DefinedFields['Mutation']
@@ -55,6 +65,7 @@ export namespace CardModule {
   export interface Resolvers {
     Card?: CardResolvers;
     Query?: QueryResolvers;
+    MoveCardResult?: MoveCardResultResolvers;
     Mutation?: MutationResolvers;
     Date?: Types.Resolvers['Date'];
   }
@@ -81,9 +92,20 @@ export namespace CardModule {
       cards?: gm.Middleware[];
       card?: gm.Middleware[];
     };
+    MoveCardResult?: {
+      '*'?: gm.Middleware[];
+      id?: gm.Middleware[];
+      boardId?: gm.Middleware[];
+      listId?: gm.Middleware[];
+      oldBoardId?: gm.Middleware[];
+      oldListId?: gm.Middleware[];
+      rank?: gm.Middleware[];
+      version?: gm.Middleware[];
+    };
     Mutation?: {
       '*'?: gm.Middleware[];
       createCard?: gm.Middleware[];
+      moveCard?: gm.Middleware[];
       updateCard?: gm.Middleware[];
     };
   }
