@@ -1,6 +1,9 @@
 import CardModel from '../../models/CardModel';
-import { ERROR_EDIT_CONFLICT, ERROR_NOT_FOUND } from '../../constants/errors';
-import generateErrorUpdateOnClosedItem from '../../utils/generateErrorUpdateOnClosedItem';
+import {
+  ERROR_EDIT_CONFLICT,
+  generateErrorNotFound,
+  generateErrorUpdateOnClosedItem,
+} from '../utils/errors';
 import type { CardModule } from './generatedTypes/moduleTypes';
 
 const Query: CardModule.QueryResolvers = {
@@ -10,7 +13,7 @@ const Query: CardModule.QueryResolvers = {
 
   card: async (_, { id }) => {
     const card = await CardModel.get(id);
-    if (!card) throw ERROR_NOT_FOUND;
+    if (!card) throw generateErrorNotFound('Card');
 
     return card;
   },
@@ -23,7 +26,7 @@ const Mutation: CardModule.MutationResolvers = {
 
   moveCard: async (_, { id, boardId, listId, rank }) => {
     const card = await CardModel.get(id);
-    if (!card) throw ERROR_NOT_FOUND;
+    if (!card) throw generateErrorNotFound('Card');
 
     if (card.closed) throw generateErrorUpdateOnClosedItem('card');
 
@@ -49,7 +52,7 @@ const Mutation: CardModule.MutationResolvers = {
 
   updateCard: async (_, { id, updates: { closed, description, name } }) => {
     const card = await CardModel.get(id);
-    if (!card) throw ERROR_NOT_FOUND;
+    if (!card) throw generateErrorNotFound('Card');
 
     if (card.closed) throw generateErrorUpdateOnClosedItem('card');
 
