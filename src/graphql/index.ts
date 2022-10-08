@@ -1,6 +1,7 @@
 import path from 'path';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
+import { DateResolver } from 'graphql-scalars';
 
 import boardResolvers from './board/resolvers';
 import listResolvers from './list/resolvers';
@@ -12,7 +13,16 @@ const typeDefsArray = loadFilesSync(path.join(__dirname, '.'), {
 });
 const typeDefs = mergeTypeDefs(typeDefsArray);
 
-const resolverArray = [boardResolvers, listResolvers, cardResolvers];
+const customScalarResolver = {
+  Date: DateResolver,
+};
+
+const resolverArray = [
+  customScalarResolver,
+  boardResolvers,
+  listResolvers,
+  cardResolvers,
+];
 const resolvers = mergeResolvers(resolverArray);
 
 export { typeDefs, resolvers };

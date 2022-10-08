@@ -8,6 +8,8 @@ generates:
     config:
       useIndexSignature: true
       defaultMapper: Partial<{T}>
+      scalars:
+        Date: string
     plugins:
       - add:
           content: '/* eslint-disable */'
