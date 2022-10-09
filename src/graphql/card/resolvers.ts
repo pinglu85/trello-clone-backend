@@ -77,29 +77,23 @@ const Mutation: CardModule.MutationResolvers = {
     };
   },
 
-  moveCard: async (_, { id, boardId, listId, rank }) => {
+  moveCard: async (_, { id, newBoardId, newListId, newRank }) => {
     const card = await CardModel.get(id);
     if (!card) throw generateErrorNotFound('Card');
 
     if (card.closed) throw generateErrorUpdateOnClosedItem('card');
 
-    const oldBoardId = card.boardId;
     const oldListId = card.listId;
-    card.boardId = boardId;
-    card.listId = listId;
-    card.rank = rank;
+    card.boardId = newBoardId;
+    card.listId = newListId;
+    card.rank = newRank;
 
     const updatedCard = await CardModel.update(card);
     if (!updatedCard) throw ERROR_EDIT_CONFLICT;
 
     return {
-      id,
-      boardId: updatedCard.boardId,
-      listId: updatedCard.listId,
-      oldBoardId,
       oldListId,
-      rank: updatedCard.rank,
-      version: updatedCard.version,
+      card: updatedCard,
     };
   },
 

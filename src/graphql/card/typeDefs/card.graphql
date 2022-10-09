@@ -25,13 +25,8 @@ type MoveAllCardsInListResult {
 }
 
 type MoveCardResult {
-  id: ID!
-  boardId: String!
-  listId: String!
-  oldBoardId: String!
   oldListId: String!
-  rank: String!
-  version: Int!
+  card: Card!
 }
 
 input CardUpdates {
@@ -57,9 +52,9 @@ type Mutation {
 
   moveCard(
     id: ID!
-    boardId: String!
-    listId: String!
-    rank: String!
+    newBoardId: String!
+    newListId: String!
+    newRank: String!
   ): MoveCardResult!
 
   updateCard(id: ID!, updates: CardUpdates!): Card!
