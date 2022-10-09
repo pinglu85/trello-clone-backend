@@ -37,8 +37,7 @@ export namespace CardModule {
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
-  export type Scalars = Pick<Types.Scalars, 'Date' | 'JSONObject'>;
-  export type DateScalarConfig = Types.DateScalarConfig;
+  export type Scalars = Pick<Types.Scalars, 'JSONObject'>;
   export type JsonObjectScalarConfig = Types.JsonObjectScalarConfig;
 
   export type CardResolvers = Pick<
@@ -68,7 +67,6 @@ export namespace CardModule {
     MoveAllCardsInListResult?: MoveAllCardsInListResultResolvers;
     MoveCardResult?: MoveCardResultResolvers;
     Mutation?: MutationResolvers;
-    Date?: Types.Resolvers['Date'];
     JSONObject?: Types.Resolvers['JSONObject'];
   }
 

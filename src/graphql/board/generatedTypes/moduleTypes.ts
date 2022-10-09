@@ -27,9 +27,6 @@ export namespace BoardModule {
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
-  export type Scalars = Pick<Types.Scalars, 'Date'>;
-  export type DateScalarConfig = Types.DateScalarConfig;
-
   export type BoardResolvers = Pick<
     Types.BoardResolvers,
     DefinedFields['Board'] | '__isTypeOf'
@@ -47,7 +44,6 @@ export namespace BoardModule {
     Board?: BoardResolvers;
     Query?: QueryResolvers;
     Mutation?: MutationResolvers;
-    Date?: Types.Resolvers['Date'];
   }
 
   export interface MiddlewareMap {

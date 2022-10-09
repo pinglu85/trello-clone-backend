@@ -13,7 +13,6 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Date: string;
   JSONObject: { [key: string]: any };
 };
 
@@ -281,7 +280,6 @@ export type ResolversTypes = ResolversObject<{
   Boolean: ResolverTypeWrapper<Partial<Scalars['Boolean']>>;
   Card: ResolverTypeWrapper<Partial<Card>>;
   CardUpdates: ResolverTypeWrapper<Partial<CardUpdates>>;
-  Date: ResolverTypeWrapper<Partial<Scalars['Date']>>;
   ID: ResolverTypeWrapper<Partial<Scalars['ID']>>;
   Int: ResolverTypeWrapper<Partial<Scalars['Int']>>;
   JSONObject: ResolverTypeWrapper<Partial<Scalars['JSONObject']>>;
@@ -302,7 +300,6 @@ export type ResolversParentTypes = ResolversObject<{
   Boolean: Partial<Scalars['Boolean']>;
   Card: Partial<Card>;
   CardUpdates: Partial<CardUpdates>;
-  Date: Partial<Scalars['Date']>;
   ID: Partial<Scalars['ID']>;
   Int: Partial<Scalars['Int']>;
   JSONObject: Partial<Scalars['JSONObject']>;
@@ -336,10 +333,6 @@ export type CardResolvers<ContextType = any, ParentType extends ResolversParentT
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
-
-export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
-  name: 'Date';
-}
 
 export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSONObject'], any> {
   name: 'JSONObject';
@@ -400,7 +393,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 export type Resolvers<ContextType = any> = ResolversObject<{
   Board?: BoardResolvers<ContextType>;
   Card?: CardResolvers<ContextType>;
-  Date?: GraphQLScalarType;
   JSONObject?: GraphQLScalarType;
   List?: ListResolvers<ContextType>;
   MoveAllCardsInListResult?: MoveAllCardsInListResultResolvers<ContextType>;
@@ -411,5 +403,4 @@ export type Resolvers<ContextType = any> = ResolversObject<{
 }>;
 
 
-export type Date = Scalars["Date"];
 export type JsonObject = Scalars["JSONObject"];
