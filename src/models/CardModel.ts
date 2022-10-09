@@ -155,47 +155,56 @@ class CardModel {
 
   static async updateMany(updateMap: UpdateManyUpdateMap): Promise<Card[]> {
     const query = `--sql
-      UPDATE
-        cards AS c
-      SET
-        board_id = d.board_id,
-        closed = d.closed,
-        description = d.description,
-        list_id = d.list_id,
-        name = d.name,
-        rank = d.rank,
-        updated_at = CURRENT_TIMESTAMP,
-        version = c.version + 1
+      WITH data AS (
+        SELECT
+          *
+        FROM
+          UNNEST (
+            $1::int[],     --id
+            $2::int[],     --board_id
+            $3::boolean[], --closed
+            $4::text[],    --description
+            $5::int[],     --list_id
+            $6::text[],    --name
+            $7::text[],    --rank
+            $8::int[]      --version
+          ) AS DATA(id, board_id, closed, description, list_id, name, rank, version)
+      ), 
+      updated AS (
+        UPDATE
+          cards AS c
+        SET
+          board_id = d.board_id,
+          closed = d.closed,
+          description = d.description,
+          list_id = d.list_id,
+          name = d.name,
+          rank = d.rank,
+          updated_at = CURRENT_TIMESTAMP,
+          version = c.version + 1
+        FROM
+          data AS d
+        WHERE
+          c.id = d.id
+          AND c.version = d.version
+        RETURNING
+          c.id,
+          c.board_id AS "boardId",
+          c.closed,
+          c.created_at AS "createdAt",
+          c.description,
+          c.list_id AS "listId",
+          c.name,
+          c.rank,
+          c.updated_at AS "updatedAt",
+          c.version
+      )
+      SELECT
+        *
       FROM
-        (
-          SELECT
-            *
-          FROM
-             UNNEST (
-              $1::int[],     --id
-              $2::int[],     --board_id
-              $3::boolean[], --closed
-              $4::text[],    --description
-              $5::int[],     --list_id
-              $6::text[],    --name
-              $7::text[],    --rank
-              $8::int[]      --version
-            ) AS DATA(id, board_id, closed, description, list_id, name, rank, version)
-        ) AS d
-      WHERE
-        c.id = d.id
-        AND c.version = d.version
-      RETURNING
-        c.id,
-        c.board_id AS "boardId",
-        c.closed,
-        c.created_at AS "createdAt",
-        c.description,
-        c.list_id AS "listId",
-        c.name,
-        c.rank,
-        c.updated_at AS "updatedAt",
-        c.version;
+        updated
+      ORDER BY
+        rank;
     `;
 
     const { rows } = await pgPool.query<Card>(query, [
