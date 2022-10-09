@@ -5,13 +5,10 @@ type Card {
   id: ID!
   boardId: String!
   closed: Boolean!
-  createdAt: Date!
   description: String
   listId: String!
   name: String!
   rank: String!
-  updatedAt: Date!
-  version: Int!
 }
 
 type Query {

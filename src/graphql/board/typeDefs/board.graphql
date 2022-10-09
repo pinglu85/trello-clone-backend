@@ -5,11 +5,8 @@ type Board {
   backgroundColor: String
   backgroundImage: String
   closed: Boolean!
-  createdAt: Date!
   lists: [List!]!
   name: String!
-  updatedAt: Date!
-  version: Int!
 }
 
 type Query {

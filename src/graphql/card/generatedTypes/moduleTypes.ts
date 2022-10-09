@@ -7,13 +7,10 @@ export namespace CardModule {
       | 'id'
       | 'boardId'
       | 'closed'
-      | 'createdAt'
       | 'description'
       | 'listId'
       | 'name'
-      | 'rank'
-      | 'updatedAt'
-      | 'version';
+      | 'rank';
     Query: 'cards' | 'card';
     MoveAllCardsInListResult: 'oldListId' | 'cards';
     MoveCardResult: 'oldListId' | 'card';
@@ -84,13 +81,10 @@ export namespace CardModule {
       id?: gm.Middleware[];
       boardId?: gm.Middleware[];
       closed?: gm.Middleware[];
-      createdAt?: gm.Middleware[];
       description?: gm.Middleware[];
       listId?: gm.Middleware[];
       name?: gm.Middleware[];
       rank?: gm.Middleware[];
-      updatedAt?: gm.Middleware[];
-      version?: gm.Middleware[];
     };
     Query?: {
       '*'?: gm.Middleware[];
