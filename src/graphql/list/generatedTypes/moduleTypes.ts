@@ -26,9 +26,6 @@ export namespace ListModule {
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
-  export type Scalars = Pick<Types.Scalars, 'Date'>;
-  export type DateScalarConfig = Types.DateScalarConfig;
-
   export type ListResolvers = Pick<
     Types.ListResolvers,
     DefinedFields['List'] | '__isTypeOf'
@@ -51,7 +48,6 @@ export namespace ListModule {
     Query?: QueryResolvers;
     MoveListResult?: MoveListResultResolvers;
     Mutation?: MutationResolvers;
-    Date?: Types.Resolvers['Date'];
   }
 
   export interface MiddlewareMap {

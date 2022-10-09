@@ -10,7 +10,6 @@ generates:
       defaultMapper: Partial<{T}>
       scalars:
         ID: string | number
-        Date: string
         JSONObject: '{ [key: string]: any }'
     plugins:
       - add:
