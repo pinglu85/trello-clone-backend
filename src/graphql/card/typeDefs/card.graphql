@@ -1,4 +1,5 @@
 scalar Date
+scalar JSONObject
 
 type Card {
   id: ID!
@@ -16,6 +17,11 @@ type Card {
 type Query {
   cards(listId: String!): [Card!]!
   card(id: ID!): Card!
+}
+
+type MoveAllCardsInListResult {
+  oldListId: String!
+  cards: [Card!]!
 }
 
 type MoveCardResult {
@@ -41,6 +47,13 @@ type Mutation {
     name: String!
     rank: String!
   ): Card!
+
+  moveAllCardsInList(
+    oldListId: String!
+    newBoardId: String!
+    newListId: String!
+    rankMap: JSONObject!
+  ): MoveAllCardsInListResult!
 
   moveCard(
     id: ID!

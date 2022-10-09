@@ -13,7 +13,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  Date: any;
+  Date: string;
+  JSONObject: { [key: string]: any };
 };
 
 export type Board = {
@@ -73,6 +74,12 @@ export type ListUpdates = {
   name?: InputMaybe<Scalars['String']>;
 };
 
+export type MoveAllCardsInListResult = {
+  __typename?: 'MoveAllCardsInListResult';
+  cards: Array<Card>;
+  oldListId: Scalars['String'];
+};
+
 export type MoveCardResult = {
   __typename?: 'MoveCardResult';
   boardId: Scalars['String'];
@@ -99,6 +106,7 @@ export type Mutation = {
   createCard: Card;
   createList: List;
   deleteBoard: Scalars['Boolean'];
+  moveAllCardsInList: MoveAllCardsInListResult;
   moveCard: MoveCardResult;
   moveList: MoveListResult;
   updateBoard: Board;
@@ -130,6 +138,14 @@ export type MutationCreateListArgs = {
 
 export type MutationDeleteBoardArgs = {
   id: Scalars['ID'];
+};
+
+
+export type MutationMoveAllCardsInListArgs = {
+  newBoardId: Scalars['String'];
+  newListId: Scalars['String'];
+  oldListId: Scalars['String'];
+  rankMap: Scalars['JSONObject'];
 };
 
 
@@ -283,8 +299,10 @@ export type ResolversTypes = ResolversObject<{
   Date: ResolverTypeWrapper<Partial<Scalars['Date']>>;
   ID: ResolverTypeWrapper<Partial<Scalars['ID']>>;
   Int: ResolverTypeWrapper<Partial<Scalars['Int']>>;
+  JSONObject: ResolverTypeWrapper<Partial<Scalars['JSONObject']>>;
   List: ResolverTypeWrapper<Partial<List>>;
   ListUpdates: ResolverTypeWrapper<Partial<ListUpdates>>;
+  MoveAllCardsInListResult: ResolverTypeWrapper<Partial<MoveAllCardsInListResult>>;
   MoveCardResult: ResolverTypeWrapper<Partial<MoveCardResult>>;
   MoveListResult: ResolverTypeWrapper<Partial<MoveListResult>>;
   Mutation: ResolverTypeWrapper<{}>;
@@ -302,8 +320,10 @@ export type ResolversParentTypes = ResolversObject<{
   Date: Partial<Scalars['Date']>;
   ID: Partial<Scalars['ID']>;
   Int: Partial<Scalars['Int']>;
+  JSONObject: Partial<Scalars['JSONObject']>;
   List: Partial<List>;
   ListUpdates: Partial<ListUpdates>;
+  MoveAllCardsInListResult: Partial<MoveAllCardsInListResult>;
   MoveCardResult: Partial<MoveCardResult>;
   MoveListResult: Partial<MoveListResult>;
   Mutation: {};
@@ -342,6 +362,10 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Date';
 }
 
+export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['JSONObject'], any> {
+  name: 'JSONObject';
+}
+
 export type ListResolvers<ContextType = any, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = ResolversObject<{
   boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType>;
@@ -352,6 +376,12 @@ export type ListResolvers<ContextType = any, ParentType extends ResolversParentT
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type MoveAllCardsInListResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveAllCardsInListResult'] = ResolversParentTypes['MoveAllCardsInListResult']> = ResolversObject<{
+  cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType>;
+  oldListId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -380,6 +410,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'boardId' | 'listId' | 'name' | 'rank'>>;
   createList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationCreateListArgs, 'boardId' | 'name' | 'rank'>>;
   deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'id'>>;
+  moveAllCardsInList?: Resolver<ResolversTypes['MoveAllCardsInListResult'], ParentType, ContextType, RequireFields<MutationMoveAllCardsInListArgs, 'newBoardId' | 'newListId' | 'oldListId' | 'rankMap'>>;
   moveCard?: Resolver<ResolversTypes['MoveCardResult'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'boardId' | 'id' | 'listId' | 'rank'>>;
   moveList?: Resolver<ResolversTypes['MoveListResult'], ParentType, ContextType, RequireFields<MutationMoveListArgs, 'boardId' | 'id' | 'rank'>>;
   updateBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardArgs, 'id' | 'updates'>>;
@@ -400,7 +431,9 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Board?: BoardResolvers<ContextType>;
   Card?: CardResolvers<ContextType>;
   Date?: GraphQLScalarType;
+  JSONObject?: GraphQLScalarType;
   List?: ListResolvers<ContextType>;
+  MoveAllCardsInListResult?: MoveAllCardsInListResultResolvers<ContextType>;
   MoveCardResult?: MoveCardResultResolvers<ContextType>;
   MoveListResult?: MoveListResultResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
@@ -409,3 +442,4 @@ export type Resolvers<ContextType = any> = ResolversObject<{
 
 
 export type Date = Scalars["Date"];
+export type JsonObject = Scalars["JSONObject"];

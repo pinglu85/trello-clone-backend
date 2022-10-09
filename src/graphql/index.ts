@@ -1,7 +1,7 @@
 import path from 'path';
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { mergeTypeDefs, mergeResolvers } from '@graphql-tools/merge';
-import { DateResolver } from 'graphql-scalars';
+import { DateResolver, JSONObjectResolver } from 'graphql-scalars';
 
 import boardResolvers from './board/resolvers';
 import listResolvers from './list/resolvers';
@@ -15,6 +15,7 @@ const typeDefs = mergeTypeDefs(typeDefsArray);
 
 const customScalarResolver = {
   Date: DateResolver,
+  JSONObject: JSONObjectResolver,
 };
 
 const resolverArray = [

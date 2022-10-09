@@ -15,6 +15,7 @@ export namespace CardModule {
       | 'updatedAt'
       | 'version';
     Query: 'cards' | 'card';
+    MoveAllCardsInListResult: 'oldListId' | 'cards';
     MoveCardResult:
       | 'id'
       | 'boardId'
@@ -23,7 +24,7 @@ export namespace CardModule {
       | 'oldListId'
       | 'rank'
       | 'version';
-    Mutation: 'createCard' | 'moveCard' | 'updateCard';
+    Mutation: 'createCard' | 'moveAllCardsInList' | 'moveCard' | 'updateCard';
   }
 
   interface DefinedInputFields {
@@ -32,6 +33,10 @@ export namespace CardModule {
 
   export type Card = Pick<Types.Card, DefinedFields['Card']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
+  export type MoveAllCardsInListResult = Pick<
+    Types.MoveAllCardsInListResult,
+    DefinedFields['MoveAllCardsInListResult']
+  >;
   export type MoveCardResult = Pick<
     Types.MoveCardResult,
     DefinedFields['MoveCardResult']
@@ -42,8 +47,9 @@ export namespace CardModule {
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
-  export type Scalars = Pick<Types.Scalars, 'Date'>;
+  export type Scalars = Pick<Types.Scalars, 'Date' | 'JSONObject'>;
   export type DateScalarConfig = Types.DateScalarConfig;
+  export type JsonObjectScalarConfig = Types.JsonObjectScalarConfig;
 
   export type CardResolvers = Pick<
     Types.CardResolvers,
@@ -52,6 +58,10 @@ export namespace CardModule {
   export type QueryResolvers = Pick<
     Types.QueryResolvers,
     DefinedFields['Query']
+  >;
+  export type MoveAllCardsInListResultResolvers = Pick<
+    Types.MoveAllCardsInListResultResolvers,
+    DefinedFields['MoveAllCardsInListResult'] | '__isTypeOf'
   >;
   export type MoveCardResultResolvers = Pick<
     Types.MoveCardResultResolvers,
@@ -65,9 +75,11 @@ export namespace CardModule {
   export interface Resolvers {
     Card?: CardResolvers;
     Query?: QueryResolvers;
+    MoveAllCardsInListResult?: MoveAllCardsInListResultResolvers;
     MoveCardResult?: MoveCardResultResolvers;
     Mutation?: MutationResolvers;
     Date?: Types.Resolvers['Date'];
+    JSONObject?: Types.Resolvers['JSONObject'];
   }
 
   export interface MiddlewareMap {
@@ -92,6 +104,11 @@ export namespace CardModule {
       cards?: gm.Middleware[];
       card?: gm.Middleware[];
     };
+    MoveAllCardsInListResult?: {
+      '*'?: gm.Middleware[];
+      oldListId?: gm.Middleware[];
+      cards?: gm.Middleware[];
+    };
     MoveCardResult?: {
       '*'?: gm.Middleware[];
       id?: gm.Middleware[];
@@ -105,6 +122,7 @@ export namespace CardModule {
     Mutation?: {
       '*'?: gm.Middleware[];
       createCard?: gm.Middleware[];
+      moveAllCardsInList?: gm.Middleware[];
       moveCard?: gm.Middleware[];
       updateCard?: gm.Middleware[];
     };
