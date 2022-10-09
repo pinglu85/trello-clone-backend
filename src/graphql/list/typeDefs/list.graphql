@@ -32,6 +32,6 @@ input ListUpdates {
 
 type Mutation {
   createList(boardId: String!, name: String!, rank: String!): List!
-  moveList(id: ID!, boardId: String!, rank: String!): MoveListResult!
+  moveList(id: ID!, newBoardId: String!, newRank: String!): MoveListResult!
   updateList(id: ID!, updates: ListUpdates!): List!
 }

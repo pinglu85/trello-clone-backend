@@ -153,9 +153,9 @@ export type MutationMoveCardArgs = {
 
 
 export type MutationMoveListArgs = {
-  boardId: Scalars['String'];
   id: Scalars['ID'];
-  rank: Scalars['String'];
+  newBoardId: Scalars['String'];
+  newRank: Scalars['String'];
 };
 
 
@@ -402,7 +402,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'id'>>;
   moveAllCardsInList?: Resolver<ResolversTypes['MoveAllCardsInListResult'], ParentType, ContextType, RequireFields<MutationMoveAllCardsInListArgs, 'newBoardId' | 'newListId' | 'newRankMap' | 'oldListId'>>;
   moveCard?: Resolver<ResolversTypes['MoveCardResult'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'id' | 'newBoardId' | 'newListId' | 'newRank'>>;
-  moveList?: Resolver<ResolversTypes['MoveListResult'], ParentType, ContextType, RequireFields<MutationMoveListArgs, 'boardId' | 'id' | 'rank'>>;
+  moveList?: Resolver<ResolversTypes['MoveListResult'], ParentType, ContextType, RequireFields<MutationMoveListArgs, 'id' | 'newBoardId' | 'newRank'>>;
   updateBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationUpdateBoardArgs, 'id' | 'updates'>>;
   updateCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationUpdateCardArgs, 'id' | 'updates'>>;
   updateList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationUpdateListArgs, 'id' | 'updates'>>;
