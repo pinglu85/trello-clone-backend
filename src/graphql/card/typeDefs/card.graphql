@@ -52,7 +52,7 @@ type Mutation {
     oldListId: String!
     newBoardId: String!
     newListId: String!
-    rankMap: JSONObject!
+    newRankMap: JSONObject!
   ): MoveAllCardsInListResult!
 
   moveCard(
