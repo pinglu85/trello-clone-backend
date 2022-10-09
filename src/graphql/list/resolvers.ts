@@ -1,4 +1,5 @@
 import ListModel from '../../models/ListModel';
+import convertIdToNumber from '../utils/convertIdToNumber';
 import {
   ERROR_EDIT_CONFLICT,
   generateErrorNotFound,
@@ -13,7 +14,8 @@ const Query: ListModule.QueryResolvers = {
   },
 
   list: async (_, { id }) => {
-    const list = await ListModel.get(id);
+    const listId = convertIdToNumber(id);
+    const list = await ListModel.get(listId);
     if (!list) throw generateErrorNotFound('List');
 
     return list;
@@ -26,7 +28,8 @@ const Mutation: ListModule.MutationResolvers = {
   },
 
   moveList: async (_, { id, newBoardId, newRank }) => {
-    const list = await ListModel.get(id);
+    const listId = convertIdToNumber(id);
+    const list = await ListModel.get(listId);
     if (!list) throw generateErrorNotFound('List');
 
     if (list.closed) throw generateErrorUpdateOnClosedItem('list');
@@ -47,7 +50,8 @@ const Mutation: ListModule.MutationResolvers = {
   },
 
   updateList: async (_, { id, updates: { closed, name } }) => {
-    const list = await ListModel.get(id);
+    const listId = convertIdToNumber(id);
+    const list = await ListModel.get(listId);
     if (!list) throw generateErrorNotFound('List');
 
     if (list.closed) throw generateErrorUpdateOnClosedItem('list');
@@ -67,7 +71,8 @@ const List: ListModule.ListResolvers = {
   cards: (list) => {
     if (!list.id) return [];
 
-    return CardModel.getAll(list.id);
+    const listId = convertIdToNumber(list.id);
+    return CardModel.getAll(listId);
   },
 };
 

@@ -1,7 +1,7 @@
 import pgPool from './pgPool';
 
 interface Board {
-  id: string;
+  id: number;
   backgroundColor: string | null;
   backgroundImage: string | null;
   closed: boolean;
@@ -12,7 +12,7 @@ interface Board {
 }
 
 class BoardModel {
-  static async get(id: string): Promise<Board | null> {
+  static async get(id: number): Promise<Board | null> {
     const query = `--sql
       SELECT
         id,
@@ -123,7 +123,7 @@ class BoardModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async delete(id: string): Promise<boolean> {
+  static async delete(id: number): Promise<boolean> {
     const query = `--sql
       DELETE FROM
         boards

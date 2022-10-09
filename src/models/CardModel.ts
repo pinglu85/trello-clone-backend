@@ -1,12 +1,12 @@
 import pgPool from './pgPool';
 
 interface Card {
-  id: string;
-  boardId: string;
+  id: number;
+  boardId: number;
   closed: boolean;
   createdAt: string;
   description: string | null;
-  listId: string;
+  listId: number;
   name: string;
   rank: string;
   updatedAt: string;
@@ -25,7 +25,7 @@ interface UpdateManyUpdateMap {
 }
 
 class CardModel {
-  static async get(id: string): Promise<Card | null> {
+  static async get(id: number): Promise<Card | null> {
     const query = `--sql
       SELECT
         id,
@@ -49,7 +49,7 @@ class CardModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(listId: string): Promise<Card[]> {
+  static async getAll(listId: number): Promise<Card[]> {
     const query = `--sql
       SELECT
         id,
@@ -77,8 +77,8 @@ class CardModel {
   }
 
   static async insert(
-    boardId: string,
-    listId: string,
+    boardId: number,
+    listId: number,
     name: string,
     rank: string
   ): Promise<Card> {

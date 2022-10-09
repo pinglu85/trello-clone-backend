@@ -3,26 +3,26 @@ scalar JSONObject
 
 type Card {
   id: ID!
-  boardId: String!
+  boardId: Int!
   closed: Boolean!
   description: String
-  listId: String!
+  listId: Int!
   name: String!
   rank: String!
 }
 
 type Query {
-  cards(listId: String!): [Card!]!
+  cards(listId: Int!): [Card!]!
   card(id: ID!): Card!
 }
 
 type MoveAllCardsInListResult {
-  oldListId: String!
+  oldListId: Int!
   cards: [Card!]!
 }
 
 type MoveCardResult {
-  oldListId: String!
+  oldListId: Int!
   card: Card!
 }
 
@@ -33,24 +33,19 @@ input CardUpdates {
 }
 
 type Mutation {
-  createCard(
-    boardId: String!
-    listId: String!
-    name: String!
-    rank: String!
-  ): Card!
+  createCard(boardId: Int!, listId: Int!, name: String!, rank: String!): Card!
 
   moveAllCardsInList(
-    oldListId: String!
-    newBoardId: String!
-    newListId: String!
+    oldListId: Int!
+    newBoardId: Int!
+    newListId: Int!
     newRankMap: JSONObject!
   ): MoveAllCardsInListResult!
 
   moveCard(
     id: ID!
-    newBoardId: String!
-    newListId: String!
+    newBoardId: Int!
+    newListId: Int!
     newRank: String!
   ): MoveCardResult!
 
