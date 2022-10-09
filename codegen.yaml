@@ -10,6 +10,7 @@ generates:
       defaultMapper: Partial<{T}>
       scalars:
         Date: string
+        JSONObject: '{ [key: string]: any }'
     plugins:
       - add:
           content: '/* eslint-disable */'
