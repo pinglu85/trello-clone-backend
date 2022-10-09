@@ -29,10 +29,10 @@ const Mutation: CardModule.MutationResolvers = {
 
   moveAllCardsInList: async (
     _,
-    { oldListId, newBoardId, newListId, rankMap }
+    { oldListId, newBoardId, newListId, newRankMap }
   ) => {
     const cards = await CardModel.getAll(oldListId);
-    const numOfCardsNeedUpdate = Object.keys(rankMap).length;
+    const numOfCardsNeedUpdate = Object.keys(newRankMap).length;
 
     if (cards.length !== numOfCardsNeedUpdate) {
       throw new UserInputError(
@@ -52,7 +52,7 @@ const Mutation: CardModule.MutationResolvers = {
     };
 
     for (const card of cards) {
-      if (!Object.prototype.hasOwnProperty.call(rankMap, card.id)) {
+      if (!Object.prototype.hasOwnProperty.call(newRankMap, card.id)) {
         throw new UserInputError(`Missing rank for card with id ${card.id}`);
       }
 
@@ -62,7 +62,7 @@ const Mutation: CardModule.MutationResolvers = {
       updateMap.description.push(card.description);
       updateMap.listId.push(newListId);
       updateMap.name.push(card.name);
-      updateMap.rank.push(rankMap[card.id]);
+      updateMap.rank.push(newRankMap[card.id]);
       updateMap.version.push(card.version);
     }
 
