@@ -3,18 +3,9 @@ import * as Types from '../../generatedTypes/graphql';
 import * as gm from 'graphql-modules';
 export namespace ListModule {
   interface DefinedFields {
-    List:
-      | 'id'
-      | 'boardId'
-      | 'cards'
-      | 'closed'
-      | 'createdAt'
-      | 'name'
-      | 'rank'
-      | 'updatedAt'
-      | 'version';
+    List: 'id' | 'boardId' | 'cards' | 'closed' | 'name' | 'rank';
     Query: 'lists' | 'list';
-    MoveListResult: 'id' | 'boardId' | 'oldBoardId' | 'rank' | 'version';
+    MoveListResult: 'id' | 'boardId' | 'oldBoardId' | 'rank';
     Mutation: 'createList' | 'moveList' | 'updateList';
   }
 
@@ -73,11 +64,8 @@ export namespace ListModule {
       boardId?: gm.Middleware[];
       cards?: gm.Middleware[];
       closed?: gm.Middleware[];
-      createdAt?: gm.Middleware[];
       name?: gm.Middleware[];
       rank?: gm.Middleware[];
-      updatedAt?: gm.Middleware[];
-      version?: gm.Middleware[];
     };
     Query?: {
       '*'?: gm.Middleware[];
@@ -90,7 +78,6 @@ export namespace ListModule {
       boardId?: gm.Middleware[];
       oldBoardId?: gm.Middleware[];
       rank?: gm.Middleware[];
-      version?: gm.Middleware[];
     };
     Mutation?: {
       '*'?: gm.Middleware[];

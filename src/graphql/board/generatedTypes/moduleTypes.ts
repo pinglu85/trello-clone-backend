@@ -8,11 +8,8 @@ export namespace BoardModule {
       | 'backgroundColor'
       | 'backgroundImage'
       | 'closed'
-      | 'createdAt'
       | 'lists'
-      | 'name'
-      | 'updatedAt'
-      | 'version';
+      | 'name';
     Query: 'boards' | 'board';
     Mutation: 'createBoard' | 'deleteBoard' | 'updateBoard';
   }
@@ -63,11 +60,8 @@ export namespace BoardModule {
       backgroundColor?: gm.Middleware[];
       backgroundImage?: gm.Middleware[];
       closed?: gm.Middleware[];
-      createdAt?: gm.Middleware[];
       lists?: gm.Middleware[];
       name?: gm.Middleware[];
-      updatedAt?: gm.Middleware[];
-      version?: gm.Middleware[];
     };
     Query?: {
       '*'?: gm.Middleware[];

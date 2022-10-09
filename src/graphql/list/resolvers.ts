@@ -43,7 +43,6 @@ const Mutation: ListModule.MutationResolvers = {
       boardId: updatedList.boardId,
       oldBoardId,
       rank: updatedList.rank,
-      version: updatedList.version,
     };
   },
 

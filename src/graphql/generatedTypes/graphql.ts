@@ -22,12 +22,9 @@ export type Board = {
   backgroundColor?: Maybe<Scalars['String']>;
   backgroundImage?: Maybe<Scalars['String']>;
   closed: Scalars['Boolean'];
-  createdAt: Scalars['Date'];
   id: Scalars['ID'];
   lists: Array<List>;
   name: Scalars['String'];
-  updatedAt: Scalars['Date'];
-  version: Scalars['Int'];
 };
 
 export type BoardUpdates = {
@@ -40,14 +37,11 @@ export type Card = {
   __typename?: 'Card';
   boardId: Scalars['String'];
   closed: Scalars['Boolean'];
-  createdAt: Scalars['Date'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   listId: Scalars['String'];
   name: Scalars['String'];
   rank: Scalars['String'];
-  updatedAt: Scalars['Date'];
-  version: Scalars['Int'];
 };
 
 export type CardUpdates = {
@@ -61,12 +55,9 @@ export type List = {
   boardId: Scalars['String'];
   cards: Array<Card>;
   closed: Scalars['Boolean'];
-  createdAt: Scalars['Date'];
   id: Scalars['ID'];
   name: Scalars['String'];
   rank: Scalars['String'];
-  updatedAt: Scalars['Date'];
-  version: Scalars['Int'];
 };
 
 export type ListUpdates = {
@@ -92,7 +83,6 @@ export type MoveListResult = {
   id: Scalars['ID'];
   oldBoardId: Scalars['String'];
   rank: Scalars['String'];
-  version: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -293,7 +283,6 @@ export type ResolversTypes = ResolversObject<{
   CardUpdates: ResolverTypeWrapper<Partial<CardUpdates>>;
   Date: ResolverTypeWrapper<Partial<Scalars['Date']>>;
   ID: ResolverTypeWrapper<Partial<Scalars['ID']>>;
-  Int: ResolverTypeWrapper<Partial<Scalars['Int']>>;
   JSONObject: ResolverTypeWrapper<Partial<Scalars['JSONObject']>>;
   List: ResolverTypeWrapper<Partial<List>>;
   ListUpdates: ResolverTypeWrapper<Partial<ListUpdates>>;
@@ -314,7 +303,6 @@ export type ResolversParentTypes = ResolversObject<{
   CardUpdates: Partial<CardUpdates>;
   Date: Partial<Scalars['Date']>;
   ID: Partial<Scalars['ID']>;
-  Int: Partial<Scalars['Int']>;
   JSONObject: Partial<Scalars['JSONObject']>;
   List: Partial<List>;
   ListUpdates: Partial<ListUpdates>;
@@ -330,26 +318,20 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
   backgroundColor?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   backgroundImage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lists?: Resolver<Array<ResolversTypes['List']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type CardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Card'] = ResolversParentTypes['Card']> = ResolversObject<{
   boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   listId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -365,12 +347,9 @@ export type ListResolvers<ContextType = any, ParentType extends ResolversParentT
   boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  updatedAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
-  version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -391,7 +370,6 @@ export type MoveListResultResolvers<ContextType = any, ParentType extends Resolv
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   oldBoardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  version?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 

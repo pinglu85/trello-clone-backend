@@ -5,11 +5,8 @@ type List {
   boardId: String!
   cards: [Card!]!
   closed: Boolean!
-  createdAt: Date!
   name: String!
   rank: String!
-  updatedAt: Date!
-  version: Int!
 }
 
 type Query {
@@ -22,7 +19,6 @@ type MoveListResult {
   boardId: String!
   oldBoardId: String!
   rank: String!
-  version: Int!
 }
 
 input ListUpdates {
