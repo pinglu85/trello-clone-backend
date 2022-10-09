@@ -1,8 +1,8 @@
 import pgPool from './pgPool';
 
 interface List {
-  id: string;
-  boardId: string;
+  id: number;
+  boardId: number;
   closed: boolean;
   createdAt: string;
   name: string;
@@ -12,7 +12,7 @@ interface List {
 }
 
 class ListModel {
-  static async get(id: string): Promise<List | null> {
+  static async get(id: number): Promise<List | null> {
     const query = `--sql
       SELECT
         id,
@@ -34,7 +34,7 @@ class ListModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(boardId: string): Promise<List[]> {
+  static async getAll(boardId: number): Promise<List[]> {
     const query = `--sql
       SELECT
         id,
@@ -60,7 +60,7 @@ class ListModel {
   }
 
   static async insert(
-    boardId: string,
+    boardId: number,
     name: string,
     rank: string
   ): Promise<List> {

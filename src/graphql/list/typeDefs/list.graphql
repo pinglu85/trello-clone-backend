@@ -2,7 +2,7 @@ scalar Date
 
 type List {
   id: ID!
-  boardId: String!
+  boardId: Int!
   cards: [Card!]!
   closed: Boolean!
   name: String!
@@ -10,14 +10,14 @@ type List {
 }
 
 type Query {
-  lists(boardId: String!): [List!]!
+  lists(boardId: Int!): [List!]!
   list(id: ID!): List!
 }
 
 type MoveListResult {
   id: ID!
-  boardId: String!
-  oldBoardId: String!
+  boardId: Int!
+  oldBoardId: Int!
   rank: String!
 }
 
@@ -27,7 +27,7 @@ input ListUpdates {
 }
 
 type Mutation {
-  createList(boardId: String!, name: String!, rank: String!): List!
-  moveList(id: ID!, newBoardId: String!, newRank: String!): MoveListResult!
+  createList(boardId: Int!, name: String!, rank: String!): List!
+  moveList(id: ID!, newBoardId: Int!, newRank: String!): MoveListResult!
   updateList(id: ID!, updates: ListUpdates!): List!
 }

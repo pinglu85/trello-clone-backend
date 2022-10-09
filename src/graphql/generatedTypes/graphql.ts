@@ -8,7 +8,7 @@ export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Mayb
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: string;
+  ID: string | number;
   String: string;
   Boolean: boolean;
   Int: number;
@@ -35,11 +35,11 @@ export type BoardUpdates = {
 
 export type Card = {
   __typename?: 'Card';
-  boardId: Scalars['String'];
+  boardId: Scalars['Int'];
   closed: Scalars['Boolean'];
   description?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
-  listId: Scalars['String'];
+  listId: Scalars['Int'];
   name: Scalars['String'];
   rank: Scalars['String'];
 };
@@ -52,7 +52,7 @@ export type CardUpdates = {
 
 export type List = {
   __typename?: 'List';
-  boardId: Scalars['String'];
+  boardId: Scalars['Int'];
   cards: Array<Card>;
   closed: Scalars['Boolean'];
   id: Scalars['ID'];
@@ -68,20 +68,20 @@ export type ListUpdates = {
 export type MoveAllCardsInListResult = {
   __typename?: 'MoveAllCardsInListResult';
   cards: Array<Card>;
-  oldListId: Scalars['String'];
+  oldListId: Scalars['Int'];
 };
 
 export type MoveCardResult = {
   __typename?: 'MoveCardResult';
   card: Card;
-  oldListId: Scalars['String'];
+  oldListId: Scalars['Int'];
 };
 
 export type MoveListResult = {
   __typename?: 'MoveListResult';
-  boardId: Scalars['String'];
+  boardId: Scalars['Int'];
   id: Scalars['ID'];
-  oldBoardId: Scalars['String'];
+  oldBoardId: Scalars['Int'];
   rank: Scalars['String'];
 };
 
@@ -107,15 +107,15 @@ export type MutationCreateBoardArgs = {
 
 
 export type MutationCreateCardArgs = {
-  boardId: Scalars['String'];
-  listId: Scalars['String'];
+  boardId: Scalars['Int'];
+  listId: Scalars['Int'];
   name: Scalars['String'];
   rank: Scalars['String'];
 };
 
 
 export type MutationCreateListArgs = {
-  boardId: Scalars['String'];
+  boardId: Scalars['Int'];
   name: Scalars['String'];
   rank: Scalars['String'];
 };
@@ -127,24 +127,24 @@ export type MutationDeleteBoardArgs = {
 
 
 export type MutationMoveAllCardsInListArgs = {
-  newBoardId: Scalars['String'];
-  newListId: Scalars['String'];
+  newBoardId: Scalars['Int'];
+  newListId: Scalars['Int'];
   newRankMap: Scalars['JSONObject'];
-  oldListId: Scalars['String'];
+  oldListId: Scalars['Int'];
 };
 
 
 export type MutationMoveCardArgs = {
   id: Scalars['ID'];
-  newBoardId: Scalars['String'];
-  newListId: Scalars['String'];
+  newBoardId: Scalars['Int'];
+  newListId: Scalars['Int'];
   newRank: Scalars['String'];
 };
 
 
 export type MutationMoveListArgs = {
   id: Scalars['ID'];
-  newBoardId: Scalars['String'];
+  newBoardId: Scalars['Int'];
   newRank: Scalars['String'];
 };
 
@@ -193,7 +193,7 @@ export type QueryCardArgs = {
 
 
 export type QueryCardsArgs = {
-  listId: Scalars['String'];
+  listId: Scalars['Int'];
 };
 
 
@@ -203,7 +203,7 @@ export type QueryListArgs = {
 
 
 export type QueryListsArgs = {
-  boardId: Scalars['String'];
+  boardId: Scalars['Int'];
 };
 
 export type WithIndex<TObject> = TObject & Record<string, any>;
@@ -283,6 +283,7 @@ export type ResolversTypes = ResolversObject<{
   CardUpdates: ResolverTypeWrapper<Partial<CardUpdates>>;
   Date: ResolverTypeWrapper<Partial<Scalars['Date']>>;
   ID: ResolverTypeWrapper<Partial<Scalars['ID']>>;
+  Int: ResolverTypeWrapper<Partial<Scalars['Int']>>;
   JSONObject: ResolverTypeWrapper<Partial<Scalars['JSONObject']>>;
   List: ResolverTypeWrapper<Partial<List>>;
   ListUpdates: ResolverTypeWrapper<Partial<ListUpdates>>;
@@ -303,6 +304,7 @@ export type ResolversParentTypes = ResolversObject<{
   CardUpdates: Partial<CardUpdates>;
   Date: Partial<Scalars['Date']>;
   ID: Partial<Scalars['ID']>;
+  Int: Partial<Scalars['Int']>;
   JSONObject: Partial<Scalars['JSONObject']>;
   List: Partial<List>;
   ListUpdates: Partial<ListUpdates>;
@@ -325,11 +327,11 @@ export type BoardResolvers<ContextType = any, ParentType extends ResolversParent
 }>;
 
 export type CardResolvers<ContextType = any, ParentType extends ResolversParentTypes['Card'] = ResolversParentTypes['Card']> = ResolversObject<{
-  boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  boardId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  listId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  listId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -344,7 +346,7 @@ export interface JsonObjectScalarConfig extends GraphQLScalarTypeConfig<Resolver
 }
 
 export type ListResolvers<ContextType = any, ParentType extends ResolversParentTypes['List'] = ResolversParentTypes['List']> = ResolversObject<{
-  boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  boardId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType>;
   closed?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -355,20 +357,20 @@ export type ListResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type MoveAllCardsInListResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveAllCardsInListResult'] = ResolversParentTypes['MoveAllCardsInListResult']> = ResolversObject<{
   cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType>;
-  oldListId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  oldListId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MoveCardResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveCardResult'] = ResolversParentTypes['MoveCardResult']> = ResolversObject<{
   card?: Resolver<ResolversTypes['Card'], ParentType, ContextType>;
-  oldListId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  oldListId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type MoveListResultResolvers<ContextType = any, ParentType extends ResolversParentTypes['MoveListResult'] = ResolversParentTypes['MoveListResult']> = ResolversObject<{
-  boardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  boardId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  oldBoardId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  oldBoardId?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   rank?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

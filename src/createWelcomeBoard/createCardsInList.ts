@@ -5,8 +5,8 @@ import CardModel from '../models/CardModel';
 import type { Card } from '../models/CardModel';
 
 function createCardsInList(
-  boardId: string,
-  listId: string,
+  boardId: number,
+  listId: number,
   listName: string
 ): Promise<Card>[] {
   const cardsInList = cardNames[listName];
