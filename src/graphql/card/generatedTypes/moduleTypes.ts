@@ -16,14 +16,7 @@ export namespace CardModule {
       | 'version';
     Query: 'cards' | 'card';
     MoveAllCardsInListResult: 'oldListId' | 'cards';
-    MoveCardResult:
-      | 'id'
-      | 'boardId'
-      | 'listId'
-      | 'oldBoardId'
-      | 'oldListId'
-      | 'rank'
-      | 'version';
+    MoveCardResult: 'oldListId' | 'card';
     Mutation: 'createCard' | 'moveAllCardsInList' | 'moveCard' | 'updateCard';
   }
 
@@ -111,13 +104,8 @@ export namespace CardModule {
     };
     MoveCardResult?: {
       '*'?: gm.Middleware[];
-      id?: gm.Middleware[];
-      boardId?: gm.Middleware[];
-      listId?: gm.Middleware[];
-      oldBoardId?: gm.Middleware[];
       oldListId?: gm.Middleware[];
-      rank?: gm.Middleware[];
-      version?: gm.Middleware[];
+      card?: gm.Middleware[];
     };
     Mutation?: {
       '*'?: gm.Middleware[];
