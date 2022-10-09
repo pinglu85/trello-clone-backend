@@ -67,9 +67,7 @@ const Mutation: CardModule.MutationResolvers = {
     }
 
     const updatedCards = await CardModel.updateMany(updateMap);
-    if (updatedCards.length !== numOfCardsNeedUpdate) {
-      throw ERROR_EDIT_CONFLICT;
-    }
+    if (updatedCards.length !== numOfCardsNeedUpdate) throw ERROR_EDIT_CONFLICT;
 
     return {
       oldListId,
