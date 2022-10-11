@@ -23,8 +23,12 @@ const Query: ListModule.QueryResolvers = {
 };
 
 const Mutation: ListModule.MutationResolvers = {
-  copyList: async (_, { targetId, newListRank }) => {
-    const newList = await ListModel.duplicate(targetId, newListRank);
+  copyList: async (_, { targetId, newListName, newListRank }) => {
+    const newList = await ListModel.duplicate(
+      targetId,
+      newListName,
+      newListRank
+    );
     if (!newList) {
       throw new UserInputError(
         'Target List either does not exist or has been archived'

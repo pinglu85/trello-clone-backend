@@ -87,6 +87,7 @@ class ListModel {
 
   static async duplicate(
     targetId: string,
+    newListName: string,
     newListRank: string
   ): Promise<List | null> {
     const query = `--sql
@@ -94,12 +95,12 @@ class ListModel {
         lists (board_id, name, rank) (
           SELECT
             board_id,
-            name,
-            $1 AS rank
+            $1 AS name,
+            $2 AS rank
           FROM
             lists
           WHERE
-            id = $2
+            id = $3
             AND closed = false
         )
       RETURNING
@@ -113,7 +114,11 @@ class ListModel {
         version;
     `;
 
-    const { rows } = await pgPool.query<List>(query, [newListRank, targetId]);
+    const { rows } = await pgPool.query<List>(query, [
+      newListName,
+      newListRank,
+      targetId,
+    ]);
 
     return rows.length === 0 ? null : rows[0];
   }
