@@ -1,12 +1,12 @@
 import pgPool from './pgPool';
 
 interface Card {
-  id: number;
-  boardId: number;
+  id: string;
+  boardId: string;
   closed: boolean;
   createdAt: string;
   description: string | null;
-  listId: number;
+  listId: string;
   name: string;
   rank: string;
   updatedAt: string;
@@ -25,10 +25,10 @@ interface UpdateManyUpdateMap {
 }
 
 class CardModel {
-  static async get(id: number): Promise<Card | null> {
+  static async get(id: string): Promise<Card | null> {
     const query = `--sql
       SELECT
-        id,
+        id::text,
         board_id AS "boardId",
         closed,
         created_at AS "createdAt",
@@ -49,15 +49,15 @@ class CardModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(listId: number): Promise<Card[]> {
+  static async getAll(listId: string): Promise<Card[]> {
     const query = `--sql
       SELECT
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         description,
-        list_id AS "listId",
+        list_id::text AS "listId",
         name,
         rank,
         updated_at AS "updatedAt",
@@ -77,8 +77,8 @@ class CardModel {
   }
 
   static async insert(
-    boardId: number,
-    listId: number,
+    boardId: string,
+    listId: string,
     name: string,
     rank: string
   ): Promise<Card> {
@@ -88,12 +88,12 @@ class CardModel {
       VALUES
         ($1, $2, $3, $4)
       RETURNING
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         description,
-        list_id AS "listId",
+        list_id::text AS "listId",
         name,
         rank,
         updated_at AS "updatedAt",
@@ -111,8 +111,8 @@ class CardModel {
   }
 
   static async duplicateAll(
-    oldListId: number,
-    newListId: number
+    oldListId: string,
+    newListId: string
   ): Promise<Card[]> {
     const query = `--sql
       WITH inserted AS (
@@ -131,12 +131,12 @@ class CardModel {
               AND closed = false   
           )
         RETURNING 
-          id,
-          board_id AS "boardId",
+          id::text,
+          board_id::text AS "boardId",
           closed,
           created_at AS "createdAt",
           description,
-          list_id AS "listId",
+          list_id::text AS "listId",
           name,
           rank,
           updated_at AS "updatedAt",
@@ -172,12 +172,12 @@ class CardModel {
         id = $7
         AND version = $8
       RETURNING
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         description,
-        list_id AS "listId",
+        list_id::text AS "listId",
         name,
         rank,
         updated_at AS "updatedAt",
@@ -233,12 +233,12 @@ class CardModel {
           c.id = d.id
           AND c.version = d.version
         RETURNING
-          c.id,
-          c.board_id AS "boardId",
+          c.id::text,
+          c.board_id::text AS "boardId",
           c.closed,
           c.created_at AS "createdAt",
           c.description,
-          c.list_id AS "listId",
+          c.list_id::text AS "listId",
           c.name,
           c.rank,
           c.updated_at AS "updatedAt",

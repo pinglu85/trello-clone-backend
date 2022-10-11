@@ -1,8 +1,8 @@
 import pgPool from './pgPool';
 
 interface List {
-  id: number;
-  boardId: number;
+  id: string;
+  boardId: string;
   closed: boolean;
   createdAt: string;
   name: string;
@@ -12,11 +12,11 @@ interface List {
 }
 
 class ListModel {
-  static async get(id: number): Promise<List | null> {
+  static async get(id: string): Promise<List | null> {
     const query = `--sql
       SELECT
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         name,
@@ -34,11 +34,11 @@ class ListModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(boardId: number): Promise<List[]> {
+  static async getAll(boardId: string): Promise<List[]> {
     const query = `--sql
       SELECT
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         name,
@@ -60,7 +60,7 @@ class ListModel {
   }
 
   static async insert(
-    boardId: number,
+    boardId: string,
     name: string,
     rank: string
   ): Promise<List> {
@@ -70,8 +70,8 @@ class ListModel {
       VALUES
         ($1, $2, $3)
       RETURNING
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         name,
@@ -86,7 +86,7 @@ class ListModel {
   }
 
   static async duplicate(
-    targetId: number,
+    targetId: string,
     newListRank: string
   ): Promise<List | null> {
     const query = `--sql
@@ -103,8 +103,8 @@ class ListModel {
             AND closed = false
         )
       RETURNING
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         name,
@@ -133,8 +133,8 @@ class ListModel {
         id = $5
         AND version = $6
       RETURNING
-        id,
-        board_id AS "boardId",
+        id::text,
+        board_id::text AS "boardId",
         closed,
         created_at AS "createdAt",
         name,

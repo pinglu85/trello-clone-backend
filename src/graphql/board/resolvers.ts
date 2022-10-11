@@ -1,5 +1,4 @@
 import BoardModel from '../../models/BoardModel';
-import convertIdToNumber from '../utils/convertIdToNumber';
 import getBoardBackground from './utils/gerBoardBackground';
 import { ERROR_EDIT_CONFLICT, generateErrorNotFound } from '../utils/errors';
 import ListModel from '../../models/ListModel';
@@ -11,8 +10,7 @@ const Query: BoardModule.QueryResolvers = {
   },
 
   board: async (_, { id }) => {
-    const boardId = convertIdToNumber(id);
-    const board = await BoardModel.get(boardId);
+    const board = await BoardModel.get(id);
     if (!board) throw generateErrorNotFound('Board');
 
     return board;
@@ -27,13 +25,11 @@ const Mutation: BoardModule.MutationResolvers = {
   },
 
   deleteBoard: (_, { id }) => {
-    const boardId = convertIdToNumber(id);
-    return BoardModel.delete(boardId);
+    return BoardModel.delete(id);
   },
 
   updateBoard: async (_, { id, updates: { background, closed, name } }) => {
-    const boardId = convertIdToNumber(id);
-    const board = await BoardModel.get(boardId);
+    const board = await BoardModel.get(id);
     if (!board) throw generateErrorNotFound('Board');
 
     if (background) {
@@ -58,8 +54,7 @@ const Board: BoardModule.BoardResolvers = {
   lists: (board) => {
     if (!board.id) return [];
 
-    const boardId = convertIdToNumber(board.id);
-    return ListModel.getAll(boardId);
+    return ListModel.getAll(board.id);
   },
 };
 

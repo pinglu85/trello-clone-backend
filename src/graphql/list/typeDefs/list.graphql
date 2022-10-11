@@ -1,6 +1,6 @@
 type List {
   id: ID!
-  boardId: Int!
+  boardId: String!
   cards: [Card!]!
   closed: Boolean!
   name: String!
@@ -8,14 +8,14 @@ type List {
 }
 
 type Query {
-  lists(boardId: Int!): [List!]!
+  lists(boardId: String!): [List!]!
   list(id: ID!): List!
 }
 
 type MoveListResult {
   id: ID!
-  boardId: Int!
-  oldBoardId: Int!
+  boardId: String!
+  oldBoardId: String!
   rank: String!
 }
 
@@ -26,7 +26,7 @@ input ListUpdates {
 
 type Mutation {
   copyList(targetId: ID!, newListRank: String!): List!
-  createList(boardId: Int!, name: String!, rank: String!): List!
-  moveList(id: ID!, newBoardId: Int!, newRank: String!): MoveListResult!
+  createList(boardId: String!, name: String!, rank: String!): List!
+  moveList(id: ID!, newBoardId: String!, newRank: String!): MoveListResult!
   updateList(id: ID!, updates: ListUpdates!): List!
 }

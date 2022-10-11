@@ -1,7 +1,6 @@
 import { UserInputError } from 'apollo-server-core';
 
 import CardModel from '../../models/CardModel';
-import convertIdToNumber from '../utils/convertIdToNumber';
 import {
   ERROR_EDIT_CONFLICT,
   generateErrorNotFound,
@@ -16,8 +15,7 @@ const Query: CardModule.QueryResolvers = {
   },
 
   card: async (_, { id }) => {
-    const cardId = convertIdToNumber(id);
-    const card = await CardModel.get(cardId);
+    const card = await CardModel.get(id);
     if (!card) throw generateErrorNotFound('Card');
 
     return card;
@@ -78,8 +76,7 @@ const Mutation: CardModule.MutationResolvers = {
   },
 
   moveCard: async (_, { id, newBoardId, newListId, newRank }) => {
-    const cardId = convertIdToNumber(id);
-    const card = await CardModel.get(cardId);
+    const card = await CardModel.get(id);
     if (!card) throw generateErrorNotFound('Card');
 
     if (card.closed) throw generateErrorUpdateOnClosedItem('card');
@@ -99,8 +96,7 @@ const Mutation: CardModule.MutationResolvers = {
   },
 
   updateCard: async (_, { id, updates: { closed, description, name } }) => {
-    const cardId = convertIdToNumber(id);
-    const card = await CardModel.get(cardId);
+    const card = await CardModel.get(id);
     if (!card) throw generateErrorNotFound('Card');
 
     if (card.closed) throw generateErrorUpdateOnClosedItem('card');

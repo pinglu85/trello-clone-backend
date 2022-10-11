@@ -9,7 +9,6 @@ generates:
       useIndexSignature: true
       defaultMapper: Partial<{T}>
       scalars:
-        ID: string | number
         JSONObject: '{ [key: string]: any }'
     plugins:
       - add:
