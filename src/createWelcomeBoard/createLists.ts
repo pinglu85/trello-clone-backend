@@ -4,7 +4,7 @@ import { listNames } from './boardData';
 import ListModel from '../models/ListModel';
 import type { List } from '../models/ListModel';
 
-async function createLists(boardId: number): Promise<List[]> {
+async function createLists(boardId: string): Promise<List[]> {
   let lexoRank = LexoRank.middle();
 
   const promises = listNames.map((name) => {

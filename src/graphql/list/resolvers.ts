@@ -1,5 +1,6 @@
+import { UserInputError } from 'apollo-server-core';
+
 import ListModel from '../../models/ListModel';
-import convertIdToNumber from '../utils/convertIdToNumber';
 import {
   ERROR_EDIT_CONFLICT,
   generateErrorNotFound,
@@ -14,8 +15,7 @@ const Query: ListModule.QueryResolvers = {
   },
 
   list: async (_, { id }) => {
-    const listId = convertIdToNumber(id);
-    const list = await ListModel.get(listId);
+    const list = await ListModel.get(id);
     if (!list) throw generateErrorNotFound('List');
 
     return list;
@@ -23,13 +23,28 @@ const Query: ListModule.QueryResolvers = {
 };
 
 const Mutation: ListModule.MutationResolvers = {
+  copyList: async (_, { targetId, newListRank }) => {
+    const newList = await ListModel.duplicate(targetId, newListRank);
+    if (!newList) {
+      throw new UserInputError(
+        'Target List either does not exist or has been archived'
+      );
+    }
+
+    const newCards = await CardModel.duplicateAll(targetId, newList.id);
+
+    return {
+      ...newList,
+      cards: newCards,
+    };
+  },
+
   createList: (_, { boardId, name, rank }) => {
     return ListModel.insert(boardId, name, rank);
   },
 
   moveList: async (_, { id, newBoardId, newRank }) => {
-    const listId = convertIdToNumber(id);
-    const list = await ListModel.get(listId);
+    const list = await ListModel.get(id);
     if (!list) throw generateErrorNotFound('List');
 
     if (list.closed) throw generateErrorUpdateOnClosedItem('list');
@@ -50,8 +65,7 @@ const Mutation: ListModule.MutationResolvers = {
   },
 
   updateList: async (_, { id, updates: { closed, name } }) => {
-    const listId = convertIdToNumber(id);
-    const list = await ListModel.get(listId);
+    const list = await ListModel.get(id);
     if (!list) throw generateErrorNotFound('List');
 
     if (list.closed) throw generateErrorUpdateOnClosedItem('list');
@@ -71,8 +85,7 @@ const List: ListModule.ListResolvers = {
   cards: (list) => {
     if (!list.id) return [];
 
-    const listId = convertIdToNumber(list.id);
-    return CardModel.getAll(listId);
+    return CardModel.getAll(list.id);
   },
 };
 
