@@ -140,7 +140,7 @@ class CardModel {
           name,
           rank,
           updated_at AS "updatedAt",
-          version;    
+          version    
       )
       SELECT 
         * 
