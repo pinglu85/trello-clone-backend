@@ -110,6 +110,51 @@ class CardModel {
     return rows[0];
   }
 
+  static async duplicateAll(
+    oldListId: number,
+    newListId: number
+  ): Promise<Card[]> {
+    const query = `--sql
+      WITH inserted AS (
+        INSERT INTO 
+          cards (board_id, description, list_id, name, rank) (
+            SELECT 
+              board_id, 
+              description, 
+              $1 AS list_id, 
+              name, 
+              rank
+            FROM 
+              cards 
+            WHERE 
+              list_id = $2 
+              AND closed = false   
+          )
+        RETURNING 
+          id,
+          board_id AS "boardId",
+          closed,
+          created_at AS "createdAt",
+          description,
+          list_id AS "listId",
+          name,
+          rank,
+          updated_at AS "updatedAt",
+          version;    
+      )
+      SELECT 
+        * 
+      FROM 
+        inserted
+      ORDER BY 
+        rank;    
+    `;
+
+    const { rows } = await pgPool.query<Card>(query, [newListId, oldListId]);
+
+    return rows;
+  }
+
   static async update(card: Card): Promise<Card | null> {
     const query = `--sql
       UPDATE

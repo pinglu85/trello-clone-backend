@@ -85,6 +85,39 @@ class ListModel {
     return rows[0];
   }
 
+  static async duplicate(
+    targetId: number,
+    newListRank: string
+  ): Promise<List | null> {
+    const query = `--sql
+      INSERT INTO
+        lists (board_id, name, rank) (
+          SELECT
+            board_id,
+            name,
+            $1 AS rank
+          FROM
+            lists
+          WHERE
+            id = $2
+            AND closed = false
+        )
+      RETURNING
+        id,
+        board_id AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
+    `;
+
+    const { rows } = await pgPool.query<List>(query, [newListRank, targetId]);
+
+    return rows.length === 0 ? null : rows[0];
+  }
+
   static async update(list: List): Promise<List | null> {
     const query = `--sql
       UPDATE

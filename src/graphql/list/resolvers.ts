@@ -1,3 +1,5 @@
+import { UserInputError } from 'apollo-server-core';
+
 import ListModel from '../../models/ListModel';
 import convertIdToNumber from '../utils/convertIdToNumber';
 import {
@@ -23,6 +25,23 @@ const Query: ListModule.QueryResolvers = {
 };
 
 const Mutation: ListModule.MutationResolvers = {
+  copyList: async (_, { targetId, newListRank }) => {
+    const targetListId = convertIdToNumber(targetId);
+    const newList = await ListModel.duplicate(targetListId, newListRank);
+    if (!newList) {
+      throw new UserInputError(
+        'Target List either does not exist or has been archived'
+      );
+    }
+
+    const newCards = await CardModel.duplicateAll(targetListId, newList.id);
+
+    return {
+      ...newList,
+      cards: newCards,
+    };
+  },
+
   createList: (_, { boardId, name, rank }) => {
     return ListModel.insert(boardId, name, rank);
   },
