@@ -25,7 +25,7 @@ input ListUpdates {
 }
 
 type Mutation {
-  copyList(targetId: ID!, newListRank: String!): List!
+  copyList(targetId: ID!, newListName: String!, newListRank: String!): List!
   createList(boardId: String!, name: String!, rank: String!): List!
   moveList(id: ID!, newBoardId: String!, newRank: String!): MoveListResult!
   updateList(id: ID!, updates: ListUpdates!): List!
