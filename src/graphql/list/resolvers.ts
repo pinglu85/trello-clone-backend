@@ -1,5 +1,3 @@
-import { UserInputError } from 'apollo-server-core';
-
 import ListModel from '../../models/ListModel';
 import {
   ERROR_EDIT_CONFLICT,
@@ -29,11 +27,7 @@ const Mutation: ListModule.MutationResolvers = {
       newListName,
       newListRank
     );
-    if (!newList) {
-      throw new UserInputError(
-        'Target List either does not exist or has been archived'
-      );
-    }
+    if (!newList) throw generateErrorNotFound('List');
 
     const newCards = await CardModel.duplicateAll(targetId, newList.id);
 
