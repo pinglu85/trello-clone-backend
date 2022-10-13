@@ -101,7 +101,6 @@ class ListModel {
             lists
           WHERE
             id = $3
-            AND closed = false
         )
       RETURNING
         id::text,
