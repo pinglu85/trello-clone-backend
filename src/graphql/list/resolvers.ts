@@ -21,15 +21,15 @@ const Query: ListModule.QueryResolvers = {
 };
 
 const Mutation: ListModule.MutationResolvers = {
-  copyList: async (_, { targetId, newListName, newListRank }) => {
+  copyList: async (_, { sourceListId, newListName, newListRank }) => {
     const newList = await ListModel.duplicate(
-      targetId,
+      sourceListId,
       newListName,
       newListRank
     );
     if (!newList) throw generateErrorNotFound('List');
 
-    const newCards = await CardModel.duplicateAll(targetId, newList.id);
+    const newCards = await CardModel.duplicateAll(sourceListId, newList.id);
 
     return {
       ...newList,

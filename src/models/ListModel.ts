@@ -86,7 +86,7 @@ class ListModel {
   }
 
   static async duplicate(
-    targetId: string,
+    sourceListId: string,
     newListName: string,
     newListRank: string
   ): Promise<List | null> {
@@ -116,7 +116,7 @@ class ListModel {
     const { rows } = await pgPool.query<List>(query, [
       newListName,
       newListRank,
-      targetId,
+      sourceListId,
     ]);
 
     return rows.length === 0 ? null : rows[0];
