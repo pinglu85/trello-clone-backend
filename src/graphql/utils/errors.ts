@@ -1,4 +1,5 @@
 import { GraphQLError } from 'graphql';
+
 class UserInputError extends GraphQLError {
   constructor(message: string) {
     super(message, {
@@ -9,25 +10,45 @@ class UserInputError extends GraphQLError {
   }
 }
 
-const ERROR_EDIT_CONFLICT = new GraphQLError('Edit conflict', {
-  extensions: {
-    code: 'ERROR_EDIT_CONFLICT',
-  },
-});
-
-function generateErrorNotFound(itemName: string): UserInputError {
-  return new UserInputError(`${itemName} not found`);
+class EditConflictError extends GraphQLError {
+  constructor(itemName: string) {
+    super(
+      `Unable to update the ${itemName.toLowerCase()} due to an edit conflict.`,
+      {
+        extensions: {
+          code: 'ERROR_EDIT_CONFLICT',
+        },
+      }
+    );
+  }
 }
 
-function generateErrorUpdateOnClosedItem(itemName: string): UserInputError {
-  return new UserInputError(
-    `Cannot update a ${itemName} that is already archived`
-  );
+class NoRecordError extends GraphQLError {
+  constructor(itemName: string) {
+    const formattedItemName = capitalizeFirstLetter(itemName);
+    super(`${formattedItemName} not found.`, {
+      extensions: {
+        code: 'ERROR_NO_RECORD',
+      },
+    });
+  }
+}
+
+class UpdateOnClosedItemError extends UserInputError {
+  constructor(itemName: string) {
+    super(
+      `Cannot update the ${itemName.toLowerCase()} that has/have been already archived.`
+    );
+  }
+}
+
+function capitalizeFirstLetter(str: string): string {
+  return str[0].toUpperCase() + str.slice(1);
 }
 
 export {
   UserInputError,
-  ERROR_EDIT_CONFLICT,
-  generateErrorNotFound,
-  generateErrorUpdateOnClosedItem,
+  EditConflictError,
+  NoRecordError,
+  UpdateOnClosedItemError,
 };

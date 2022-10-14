@@ -1,8 +1,8 @@
 import ListModel from '../../models/ListModel';
 import {
-  ERROR_EDIT_CONFLICT,
-  generateErrorNotFound,
-  generateErrorUpdateOnClosedItem,
+  EditConflictError,
+  NoRecordError,
+  UpdateOnClosedItemError,
 } from '../utils/errors';
 import CardModel from '../../models/CardModel';
 import type { ListModule } from './generatedTypes/moduleTypes';
@@ -14,7 +14,7 @@ const Query: ListModule.QueryResolvers = {
 
   list: async (_, { id }) => {
     const list = await ListModel.get(id);
-    if (!list) throw generateErrorNotFound('List');
+    if (!list) throw new NoRecordError('List');
 
     return list;
   },
@@ -27,7 +27,7 @@ const Mutation: ListModule.MutationResolvers = {
       newListName,
       newListRank
     );
-    if (!newList) throw generateErrorNotFound('List');
+    if (!newList) throw new NoRecordError('List');
 
     const newCards = await CardModel.duplicateAll(sourceListId, newList.id);
 
@@ -43,16 +43,16 @@ const Mutation: ListModule.MutationResolvers = {
 
   moveList: async (_, { id, newBoardId, newRank }) => {
     const list = await ListModel.get(id);
-    if (!list) throw generateErrorNotFound('List');
+    if (!list) throw new NoRecordError('List');
 
-    if (list.closed) throw generateErrorUpdateOnClosedItem('list');
+    if (list.closed) throw new UpdateOnClosedItemError('list');
 
     const oldBoardId = list.boardId;
     list.boardId = newBoardId;
     list.rank = newRank;
 
     const updatedList = await ListModel.update(list);
-    if (!updatedList) throw ERROR_EDIT_CONFLICT;
+    if (!updatedList) throw new EditConflictError('list');
 
     return {
       id,
@@ -64,16 +64,16 @@ const Mutation: ListModule.MutationResolvers = {
 
   updateList: async (_, { id, updates: { closed, name } }) => {
     const list = await ListModel.get(id);
-    if (!list) throw generateErrorNotFound('List');
+    if (!list) throw new NoRecordError('List');
 
-    if (list.closed) throw generateErrorUpdateOnClosedItem('list');
+    if (list.closed) throw new UpdateOnClosedItemError('list');
 
     if (closed) list.closed = closed;
 
     if (name) list.name = name;
 
     const updatedList = await ListModel.update(list);
-    if (!updatedList) throw ERROR_EDIT_CONFLICT;
+    if (!updatedList) throw new EditConflictError('list');
 
     return updatedList;
   },

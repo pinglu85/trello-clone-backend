@@ -1,9 +1,9 @@
 import CardModel from '../../models/CardModel';
 import {
   UserInputError,
-  ERROR_EDIT_CONFLICT,
-  generateErrorNotFound,
-  generateErrorUpdateOnClosedItem,
+  EditConflictError,
+  NoRecordError,
+  UpdateOnClosedItemError,
 } from '../utils/errors';
 import type { CardModule } from './generatedTypes/moduleTypes';
 import type { UpdateManyUpdateMap } from '../../models/CardModel';
@@ -15,7 +15,7 @@ const Query: CardModule.QueryResolvers = {
 
   card: async (_, { id }) => {
     const card = await CardModel.get(id);
-    if (!card) throw generateErrorNotFound('Card');
+    if (!card) throw new NoRecordError('Card');
 
     return card;
   },
@@ -66,7 +66,9 @@ const Mutation: CardModule.MutationResolvers = {
     }
 
     const updatedCards = await CardModel.updateMany(updateMap);
-    if (updatedCards.length !== numOfCardsNeedUpdate) throw ERROR_EDIT_CONFLICT;
+    if (updatedCards.length !== numOfCardsNeedUpdate) {
+      throw new EditConflictError('cards');
+    }
 
     return {
       oldListId,
@@ -76,9 +78,9 @@ const Mutation: CardModule.MutationResolvers = {
 
   moveCard: async (_, { id, newBoardId, newListId, newRank }) => {
     const card = await CardModel.get(id);
-    if (!card) throw generateErrorNotFound('Card');
+    if (!card) throw new NoRecordError('Card');
 
-    if (card.closed) throw generateErrorUpdateOnClosedItem('card');
+    if (card.closed) throw new UpdateOnClosedItemError('card');
 
     const oldListId = card.listId;
     card.boardId = newBoardId;
@@ -86,7 +88,7 @@ const Mutation: CardModule.MutationResolvers = {
     card.rank = newRank;
 
     const updatedCard = await CardModel.update(card);
-    if (!updatedCard) throw ERROR_EDIT_CONFLICT;
+    if (!updatedCard) throw new EditConflictError('card');
 
     return {
       oldListId,
@@ -96,9 +98,9 @@ const Mutation: CardModule.MutationResolvers = {
 
   updateCard: async (_, { id, updates: { closed, description, name } }) => {
     const card = await CardModel.get(id);
-    if (!card) throw generateErrorNotFound('Card');
+    if (!card) throw new NoRecordError('Card');
 
-    if (card.closed) throw generateErrorUpdateOnClosedItem('card');
+    if (card.closed) throw new UpdateOnClosedItemError('card');
 
     if (closed) card.closed = closed;
 
@@ -107,7 +109,7 @@ const Mutation: CardModule.MutationResolvers = {
     if (name) card.name = name;
 
     const updatedCard = await CardModel.update(card);
-    if (!updatedCard) throw ERROR_EDIT_CONFLICT;
+    if (!updatedCard) throw new EditConflictError('card');
 
     return updatedCard;
   },
