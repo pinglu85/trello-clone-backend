@@ -35,7 +35,7 @@ const Mutation: CardModule.MutationResolvers = {
 
     if (cards.length !== numOfCardsNeedUpdate) {
       throw new UserInputError(
-        'Some of the cards either do not exist or have been archived'
+        'Some of the cards either do not exist or have been archived.'
       );
     }
 
@@ -52,7 +52,7 @@ const Mutation: CardModule.MutationResolvers = {
 
     for (const card of cards) {
       if (!Object.prototype.hasOwnProperty.call(newRankMap, card.id)) {
-        throw new UserInputError(`Missing rank for card with id ${card.id}`);
+        throw new UserInputError(`Missing rank for card with id ${card.id}.`);
       }
 
       updateMap.id.push(card.id);
