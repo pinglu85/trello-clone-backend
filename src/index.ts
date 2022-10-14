@@ -1,11 +1,10 @@
 import http from 'http';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 import express from 'express';
-import { ApolloServer } from 'apollo-server-express';
-import {
-  ApolloServerPluginDrainHttpServer,
-  ApolloServerPluginLandingPageLocalDefault,
-  ApolloServerPluginLandingPageProductionDefault,
-} from 'apollo-server-core';
+import cors from 'cors';
+import { json } from 'body-parser';
 import dotenv from 'dotenv';
 import type { DocumentNode } from 'graphql';
 import type { IResolvers } from '@graphql-tools/utils';
@@ -22,59 +21,42 @@ async function startApolloServer(
 ): Promise<void> {
   const app = express();
   const httpServer = http.createServer(app);
+  const server = new ApolloServer({
+    introspection: process.env.NODE_ENV !== 'production',
+    typeDefs,
+    resolvers,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+  });
 
-  let databaseUrl;
-  let clientUrl;
-  const apolloServerPlugins = [
-    ApolloServerPluginDrainHttpServer({ httpServer }),
-  ];
+  let databaseUrl = process.env.DATABASE_URL_DEV as string;
+  let clientUrl = process.env.CLIENT_URL_DEV as string;
 
-  if (process.env.NODE_ENV === 'development') {
-    databaseUrl = process.env.DATABASE_URL_DEV as string;
-    clientUrl = process.env.CLIENT_URL_DEV as string;
-    apolloServerPlugins.push(
-      ApolloServerPluginLandingPageLocalDefault({ embed: true })
-    );
-  } else {
-    databaseUrl = process.env.DATABASE_URL_CLOUD as string;
+  if (process.env.NODE_ENV === 'production') {
+    databaseUrl = process.env.DATABASE_URL_PROD as string;
     clientUrl = process.env.CLIENT_URL_PROD as string;
-    apolloServerPlugins.push(
-      ApolloServerPluginLandingPageProductionDefault({ embed: false })
-    );
   }
 
   try {
     await pgPool.createConnection(databaseUrl);
-
-    const server = new ApolloServer({
-      introspection: process.env.NODE_ENV !== 'production',
-      typeDefs,
-      resolvers,
-      csrfPrevention: true,
-      cache: 'bounded',
-      plugins: apolloServerPlugins,
-    });
-
     await server.start();
 
-    server.applyMiddleware({
-      app,
-      cors: {
+    app.use(
+      '/',
+      cors<cors.CorsRequest>({
         origin: [clientUrl],
-      },
-      path: '/',
-    });
+      }),
+      json(),
+      expressMiddleware(server)
+    );
 
     const { rows } = await pgPool.query('SELECT COUNT(*) FROM boards');
     if (rows.length && rows[0].count === '0') await createWelcomeBoard();
 
     const PORT = process.env.PORT || 8000;
-    await new Promise<void>((resolve) =>
-      httpServer.listen({ port: PORT }, resolve)
-    );
-    console.log(
-      `🚀 Server ready at http://localhost:${PORT}${server.graphqlPath}`
-    );
+    await new Promise<void>((resolve) => {
+      httpServer.listen({ port: PORT }, resolve);
+    });
+    console.log(`🚀 Server ready at http://localhost:${PORT}`);
   } catch (error) {
     console.error(error);
     pgPool.close();

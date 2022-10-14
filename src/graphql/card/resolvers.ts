@@ -1,7 +1,6 @@
-import { UserInputError } from 'apollo-server-core';
-
 import CardModel from '../../models/CardModel';
 import {
+  UserInputError,
   ERROR_EDIT_CONFLICT,
   generateErrorNotFound,
   generateErrorUpdateOnClosedItem,
