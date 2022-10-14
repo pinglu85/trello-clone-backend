@@ -1,6 +1,6 @@
 import ListModel from '../../models/ListModel';
 import {
-  ERROR_EDIT_CONFLICT,
+  EditConflictError,
   generateErrorNotFound,
   generateErrorUpdateOnClosedItem,
 } from '../utils/errors';
@@ -52,7 +52,7 @@ const Mutation: ListModule.MutationResolvers = {
     list.rank = newRank;
 
     const updatedList = await ListModel.update(list);
-    if (!updatedList) throw ERROR_EDIT_CONFLICT;
+    if (!updatedList) throw new EditConflictError('list');
 
     return {
       id,
@@ -73,7 +73,7 @@ const Mutation: ListModule.MutationResolvers = {
     if (name) list.name = name;
 
     const updatedList = await ListModel.update(list);
-    if (!updatedList) throw ERROR_EDIT_CONFLICT;
+    if (!updatedList) throw new EditConflictError('list');
 
     return updatedList;
   },

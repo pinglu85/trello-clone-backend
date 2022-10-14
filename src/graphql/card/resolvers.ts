@@ -1,7 +1,7 @@
 import CardModel from '../../models/CardModel';
 import {
   UserInputError,
-  ERROR_EDIT_CONFLICT,
+  EditConflictError,
   generateErrorNotFound,
   generateErrorUpdateOnClosedItem,
 } from '../utils/errors';
@@ -66,7 +66,9 @@ const Mutation: CardModule.MutationResolvers = {
     }
 
     const updatedCards = await CardModel.updateMany(updateMap);
-    if (updatedCards.length !== numOfCardsNeedUpdate) throw ERROR_EDIT_CONFLICT;
+    if (updatedCards.length !== numOfCardsNeedUpdate) {
+      throw new EditConflictError('cards');
+    }
 
     return {
       oldListId,
@@ -86,7 +88,7 @@ const Mutation: CardModule.MutationResolvers = {
     card.rank = newRank;
 
     const updatedCard = await CardModel.update(card);
-    if (!updatedCard) throw ERROR_EDIT_CONFLICT;
+    if (!updatedCard) throw new EditConflictError('card');
 
     return {
       oldListId,
@@ -107,7 +109,7 @@ const Mutation: CardModule.MutationResolvers = {
     if (name) card.name = name;
 
     const updatedCard = await CardModel.update(card);
-    if (!updatedCard) throw ERROR_EDIT_CONFLICT;
+    if (!updatedCard) throw new EditConflictError('card');
 
     return updatedCard;
   },

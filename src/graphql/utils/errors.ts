@@ -1,4 +1,5 @@
 import { GraphQLError } from 'graphql';
+
 class UserInputError extends GraphQLError {
   constructor(message: string) {
     super(message, {
@@ -9,11 +10,18 @@ class UserInputError extends GraphQLError {
   }
 }
 
-const ERROR_EDIT_CONFLICT = new GraphQLError('Edit conflict', {
-  extensions: {
-    code: 'ERROR_EDIT_CONFLICT',
-  },
-});
+class EditConflictError extends GraphQLError {
+  constructor(itemName: string) {
+    super(
+      `Unable to update the ${itemName.toLowerCase()} due to an edit conflict.`,
+      {
+        extensions: {
+          code: 'ERROR_EDIT_CONFLICT',
+        },
+      }
+    );
+  }
+}
 
 function generateErrorNotFound(itemName: string): UserInputError {
   return new UserInputError(`${itemName} not found`);
@@ -27,7 +35,7 @@ function generateErrorUpdateOnClosedItem(itemName: string): UserInputError {
 
 export {
   UserInputError,
-  ERROR_EDIT_CONFLICT,
+  EditConflictError,
   generateErrorNotFound,
   generateErrorUpdateOnClosedItem,
 };
