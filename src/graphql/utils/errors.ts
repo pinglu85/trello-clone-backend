@@ -23,19 +23,32 @@ class EditConflictError extends GraphQLError {
   }
 }
 
-function generateErrorNotFound(itemName: string): UserInputError {
-  return new UserInputError(`${itemName} not found`);
+class NoRecordError extends GraphQLError {
+  constructor(itemName: string) {
+    const formattedItemName = capitalizeFirstLetter(itemName);
+    super(`${formattedItemName} not found.`, {
+      extensions: {
+        code: 'ERROR_NO_RECORD',
+      },
+    });
+  }
 }
 
-function generateErrorUpdateOnClosedItem(itemName: string): UserInputError {
-  return new UserInputError(
-    `Cannot update a ${itemName} that is already archived`
-  );
+class UpdateOnClosedItemError extends UserInputError {
+  constructor(itemName: string) {
+    super(
+      `Cannot update the ${itemName.toLowerCase()} that has/have been already archived.`
+    );
+  }
+}
+
+function capitalizeFirstLetter(str: string): string {
+  return str[0].toUpperCase() + str.slice(1);
 }
 
 export {
   UserInputError,
   EditConflictError,
-  generateErrorNotFound,
-  generateErrorUpdateOnClosedItem,
+  NoRecordError,
+  UpdateOnClosedItemError,
 };
