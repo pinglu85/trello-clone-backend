@@ -1,4 +1,4 @@
-import CardModel from '../../models/CardModel';
+import { CardModel } from '../../models';
 import {
   UserInputError,
   EditConflictError,
@@ -6,7 +6,7 @@ import {
   UpdateOnClosedItemError,
 } from '../utils/errors';
 import type { CardModule } from './generatedTypes/moduleTypes';
-import type { UpdateManyUpdateMap } from '../../models/CardModel';
+import type { CardUpdateManyUpdateMap } from '../../models';
 
 const Query: CardModule.QueryResolvers = {
   cards: (_, { listId }) => {
@@ -39,7 +39,7 @@ const Mutation: CardModule.MutationResolvers = {
       );
     }
 
-    const updateMap: UpdateManyUpdateMap = {
+    const updateMap: CardUpdateManyUpdateMap = {
       id: [],
       boardId: [],
       closed: [],

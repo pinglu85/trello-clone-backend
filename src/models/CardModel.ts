@@ -13,7 +13,7 @@ interface Card {
   version: number;
 }
 
-interface UpdateManyUpdateMap {
+interface CardUpdateManyUpdateMap {
   id: Card['id'][];
   boardId: Card['boardId'][];
   closed: Card['closed'][];
@@ -198,7 +198,7 @@ class CardModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async updateMany(updateMap: UpdateManyUpdateMap): Promise<Card[]> {
+  static async updateMany(updateMap: CardUpdateManyUpdateMap): Promise<Card[]> {
     const query = `--sql
       WITH data AS (
         SELECT
@@ -269,4 +269,4 @@ class CardModel {
 
 export default CardModel;
 
-export type { Card, UpdateManyUpdateMap };
+export type { Card, CardUpdateManyUpdateMap };
