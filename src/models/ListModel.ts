@@ -77,7 +77,7 @@ class ListModel {
   }
 
   static async update(list: List): Promise<List | null> {
-    const [query, args] = ListModel.#createUpdateQueryAndArgs(list);
+    const [query, args] = ListModel.#getUpdateQueryAndArgs(list);
 
     const { rows } = await pgPool.query<List>(query, args);
 
@@ -134,7 +134,7 @@ class ListModel {
 
       list.rank = newRank;
 
-      const [query, args] = ListModel.#createUpdateQueryAndArgs(list);
+      const [query, args] = ListModel.#getUpdateQueryAndArgs(list);
 
       const { rows } = await client.query<List>(query, args);
 
@@ -176,9 +176,7 @@ class ListModel {
     return [query, args];
   }
 
-  static #createUpdateQueryAndArgs(
-    list: List
-  ): [query: string, args: unknown[]] {
+  static #getUpdateQueryAndArgs(list: List): [query: string, args: unknown[]] {
     const query = `--sql
       UPDATE
         lists
