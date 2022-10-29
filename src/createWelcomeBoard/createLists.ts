@@ -1,8 +1,8 @@
 import { LexoRank } from 'lexorank';
 
 import { listNames } from './boardData';
-import ListModel from '../models/ListModel';
-import type { List } from '../models/ListModel';
+import { ListModel } from '../models';
+import type { List } from '../models';
 
 async function createLists(boardId: string): Promise<List[]> {
   let lexoRank = LexoRank.middle();

@@ -1,4 +1,10 @@
+import type { PoolClient } from 'pg';
+
 import pgPool from './pgPool';
+import findOrderableIndex from './utils/findOrderableIndex';
+import calcItemRank from './utils/calcItemRank';
+import NoRecordError from './errors';
+import type { Orderable } from './types';
 
 interface List {
   id: string;
@@ -64,6 +70,92 @@ class ListModel {
     name: string,
     rank: string
   ): Promise<List> {
+    const [query, args] = ListModel.#getInsertQueryAndArgs(boardId, name, rank);
+
+    const { rows } = await pgPool.query<List>(query, args);
+
+    return rows[0];
+  }
+
+  static async update(list: List): Promise<List | null> {
+    const [query, args] = ListModel.#getUpdateQueryAndArgs(list);
+
+    const { rows } = await pgPool.query<List>(query, args);
+
+    return rows.length === 0 ? null : rows[0];
+  }
+
+  static async resolveDuplicateRankOnInsert(
+    boardId: string,
+    name: string,
+    duplicateRank: string
+  ): Promise<List> {
+    const client = await pgPool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      const newRank = await ListModel.#calcNewRankOnDuplicate(
+        client,
+        boardId,
+        duplicateRank
+      );
+
+      const [query, args] = ListModel.#getInsertQueryAndArgs(
+        boardId,
+        name,
+        newRank
+      );
+
+      const { rows } = await client.query<List>(query, args);
+
+      await client.query('COMMIT');
+
+      return rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  static async resolveDuplicateRankOnUpdate(list: List): Promise<List | null> {
+    const client = await pgPool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      const newRank = await ListModel.#calcNewRankOnDuplicate(
+        client,
+        list.boardId,
+        list.rank
+      );
+
+      list.rank = newRank;
+
+      const [query, args] = ListModel.#getUpdateQueryAndArgs(list);
+
+      const { rows } = await client.query<List>(query, args);
+
+      await client.query('COMMIT');
+
+      return rows.length === 0 ? null : rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  static #getInsertQueryAndArgs(
+    boardId: string,
+    name: string,
+    rank: string
+  ): [query: string, args: unknown[]] {
     const query = `--sql
       INSERT INTO
         lists (board_id, name, rank)
@@ -80,49 +172,12 @@ class ListModel {
         version;
     `;
 
-    const { rows } = await pgPool.query<List>(query, [boardId, name, rank]);
+    const args = [boardId, name, rank];
 
-    return rows[0];
+    return [query, args];
   }
 
-  static async duplicate(
-    sourceListId: string,
-    newListName: string,
-    newListRank: string
-  ): Promise<List | null> {
-    const query = `--sql
-      INSERT INTO
-        lists (board_id, name, rank) (
-          SELECT
-            board_id,
-            $1 AS name,
-            $2 AS rank
-          FROM
-            lists
-          WHERE
-            id = $3
-        )
-      RETURNING
-        id::text,
-        board_id::text AS "boardId",
-        closed,
-        created_at AS "createdAt",
-        name,
-        rank,
-        updated_at AS "updatedAt",
-        version;
-    `;
-
-    const { rows } = await pgPool.query<List>(query, [
-      newListName,
-      newListRank,
-      sourceListId,
-    ]);
-
-    return rows.length === 0 ? null : rows[0];
-  }
-
-  static async update(list: List): Promise<List | null> {
+  static #getUpdateQueryAndArgs(list: List): [query: string, args: unknown[]] {
     const query = `--sql
       UPDATE
         lists
@@ -147,16 +202,46 @@ class ListModel {
         version;
     `;
 
-    const { rows } = await pgPool.query<List>(query, [
+    const args = [
       list.boardId,
       list.closed,
       list.name,
       list.rank,
       list.id,
       list.version,
-    ]);
+    ];
 
-    return rows.length === 0 ? null : rows[0];
+    return [query, args];
+  }
+
+  static async #calcNewRankOnDuplicate(
+    client: PoolClient,
+    boardId: string,
+    duplicateRank: string
+  ): Promise<string> {
+    const query = `--sql
+      SELECT
+        rank
+      FROM
+        lists
+      WHERE
+        board_id = $1
+        AND closed = false
+      ORDER BY
+        rank;
+    `;
+
+    const { rows: lists } = await client.query<Orderable>(query, [boardId]);
+    const listWithDuplicateRankIndex = findOrderableIndex(lists, duplicateRank);
+
+    if (listWithDuplicateRankIndex === -1) {
+      throw new NoRecordError('list', 'rank', duplicateRank);
+    }
+
+    return calcItemRank(
+      lists[listWithDuplicateRankIndex],
+      lists[listWithDuplicateRankIndex + 1]
+    );
   }
 }
 

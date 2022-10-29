@@ -1,8 +1,8 @@
 import { LexoRank } from 'lexorank';
 
 import { cardNames } from './boardData';
-import CardModel from '../models/CardModel';
-import type { Card } from '../models/CardModel';
+import { CardModel } from '../models';
+import type { Card } from '../models';
 
 function createCardsInList(
   boardId: string,

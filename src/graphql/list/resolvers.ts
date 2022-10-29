@@ -1,11 +1,11 @@
-import ListModel from '../../models/ListModel';
+import { ListModel, CardModel, isErrorDuplicateRank } from '../../models';
 import {
   EditConflictError,
   NoRecordError,
   UpdateOnClosedItemError,
 } from '../utils/errors';
-import CardModel from '../../models/CardModel';
 import type { ListModule } from './generatedTypes/moduleTypes';
+import type { List } from '../../models';
 
 const Query: ListModule.QueryResolvers = {
   lists: (_, { boardId }) => {
@@ -21,24 +21,25 @@ const Query: ListModule.QueryResolvers = {
 };
 
 const Mutation: ListModule.MutationResolvers = {
-  copyList: async (_, { sourceListId, newListName, newListRank }) => {
-    const newList = await ListModel.duplicate(
-      sourceListId,
-      newListName,
-      newListRank
-    );
-    if (!newList) throw new NoRecordError('List');
+  createList: async (_, { boardId, name, rank, sourceListId }) => {
+    let list: List | null = null;
 
-    const newCards = await CardModel.duplicateAll(sourceListId, newList.id);
+    try {
+      list = await ListModel.insert(boardId, name, rank);
+    } catch (error) {
+      if (isErrorDuplicateRank(error)) throw error;
+
+      list = await ListModel.resolveDuplicateRankOnInsert(boardId, name, rank);
+    }
+
+    if (!sourceListId) return list;
+
+    const cards = await CardModel.duplicateAll(sourceListId, list.id);
 
     return {
-      ...newList,
-      cards: newCards,
+      ...list,
+      cards: cards,
     };
-  },
-
-  createList: (_, { boardId, name, rank }) => {
-    return ListModel.insert(boardId, name, rank);
   },
 
   moveList: async (_, { id, newBoardId, newRank }) => {
@@ -51,7 +52,16 @@ const Mutation: ListModule.MutationResolvers = {
     list.boardId = newBoardId;
     list.rank = newRank;
 
-    const updatedList = await ListModel.update(list);
+    let updatedList: List | null = null;
+
+    try {
+      updatedList = await ListModel.update(list);
+    } catch (error) {
+      if (!isErrorDuplicateRank) throw error;
+
+      updatedList = await ListModel.resolveDuplicateRankOnUpdate(list);
+    }
+
     if (!updatedList) throw new EditConflictError('list');
 
     return {

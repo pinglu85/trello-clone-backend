@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 import type { DocumentNode } from 'graphql';
 import type { IResolvers } from '@graphql-tools/utils';
 
-import pgPool from './models/pgPool';
+import { pgPool } from './models';
 import { typeDefs, resolvers } from './graphql';
 import createWelcomeBoard from './createWelcomeBoard';
 

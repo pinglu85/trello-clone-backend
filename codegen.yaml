@@ -8,8 +8,6 @@ generates:
     config:
       useIndexSignature: true
       defaultMapper: Partial<{T}>
-      scalars:
-        JSONObject: '{ [key: string]: any }'
     plugins:
       - add:
           content: '/* eslint-disable */'

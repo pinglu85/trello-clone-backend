@@ -1,4 +1,10 @@
+import type { PoolClient } from 'pg';
+
 import pgPool from './pgPool';
+import findOrderableIndex from './utils/findOrderableIndex';
+import NoRecordError from './errors';
+import calcItemRank from './utils/calcItemRank';
+import type { Orderable } from './types';
 
 interface Card {
   id: string;
@@ -13,7 +19,7 @@ interface Card {
   version: number;
 }
 
-interface UpdateManyUpdateMap {
+interface CardUpdateManyUpdateMap {
   id: Card['id'][];
   boardId: Card['boardId'][];
   closed: Card['closed'][];
@@ -82,30 +88,14 @@ class CardModel {
     name: string,
     rank: string
   ): Promise<Card> {
-    const query = `--sql
-      INSERT INTO
-        cards (board_id, list_id, name, rank)
-      VALUES
-        ($1, $2, $3, $4)
-      RETURNING
-        id::text,
-        board_id::text AS "boardId",
-        closed,
-        created_at AS "createdAt",
-        description,
-        list_id::text AS "listId",
-        name,
-        rank,
-        updated_at AS "updatedAt",
-        version;
-    `;
-
-    const { rows } = await pgPool.query<Card>(query, [
+    const [query, args] = CardModel.#getInsertQueryAndArgs(
       boardId,
       listId,
       name,
-      rank,
-    ]);
+      rank
+    );
+
+    const { rows } = await pgPool.query<Card>(query, args);
 
     return rows[0];
   }
@@ -156,49 +146,14 @@ class CardModel {
   }
 
   static async update(card: Card): Promise<Card | null> {
-    const query = `--sql
-      UPDATE
-        cards
-      SET
-        board_id = $1,
-        closed = $2,
-        description = $3,
-        list_id = $4,
-        name = $5,
-        rank = $6,
-        updated_at = CURRENT_TIMESTAMP,
-        version = version + 1
-      WHERE
-        id = $7
-        AND version = $8
-      RETURNING
-        id::text,
-        board_id::text AS "boardId",
-        closed,
-        created_at AS "createdAt",
-        description,
-        list_id::text AS "listId",
-        name,
-        rank,
-        updated_at AS "updatedAt",
-        version;
-    `;
+    const [query, args] = CardModel.#getUpdateQueryAndArgs(card);
 
-    const { rows } = await pgPool.query<Card>(query, [
-      card.boardId,
-      card.closed,
-      card.description,
-      card.listId,
-      card.name,
-      card.rank,
-      card.id,
-      card.version,
-    ]);
+    const { rows } = await pgPool.query<Card>(query, args);
 
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async updateMany(updateMap: UpdateManyUpdateMap): Promise<Card[]> {
+  static async updateMany(updateMap: CardUpdateManyUpdateMap): Promise<Card[]> {
     const query = `--sql
       WITH data AS (
         SELECT
@@ -265,8 +220,177 @@ class CardModel {
 
     return rows;
   }
+
+  static async resolveDuplicateRankOnInsert(
+    boardId: string,
+    listId: string,
+    name: string,
+    duplicateRank: string
+  ): Promise<Card> {
+    const client = await pgPool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      const newRank = await CardModel.#calcNewRankOnDuplicate(
+        client,
+        listId,
+        duplicateRank
+      );
+
+      const [query, args] = CardModel.#getInsertQueryAndArgs(
+        boardId,
+        listId,
+        name,
+        newRank
+      );
+
+      const { rows } = await client.query<Card>(query, args);
+
+      await client.query('COMMIT');
+
+      return rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  static async resolveDuplicateRankOnUpdate(card: Card): Promise<Card | null> {
+    const client = await pgPool.connect();
+
+    try {
+      await client.query('BEGIN');
+
+      const newRank = await CardModel.#calcNewRankOnDuplicate(
+        client,
+        card.listId,
+        card.rank
+      );
+
+      card.rank = newRank;
+
+      const [query, args] = CardModel.#getUpdateQueryAndArgs(card);
+
+      const { rows } = await client.query<Card>(query, args);
+
+      await client.query('COMMIT');
+
+      return rows.length === 0 ? null : rows[0];
+    } catch (error) {
+      await client.query('ROLLBACK');
+
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  static #getInsertQueryAndArgs(
+    boardId: string,
+    listId: string,
+    name: string,
+    rank: string
+  ): [query: string, args: unknown[]] {
+    const query = `--sql
+      INSERT INTO
+        cards (board_id, list_id, name, rank)
+      VALUES
+        ($1, $2, $3, $4)
+      RETURNING
+        id::text,
+        board_id::text AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        description,
+        list_id::text AS "listId",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
+    `;
+
+    const args = [boardId, listId, name, rank];
+
+    return [query, args];
+  }
+
+  static #getUpdateQueryAndArgs(card: Card): [query: string, args: unknown[]] {
+    const query = `--sql
+      UPDATE
+        cards
+      SET
+        board_id = $1,
+        closed = $2,
+        description = $3,
+        list_id = $4,
+        name = $5,
+        rank = $6,
+        updated_at = CURRENT_TIMESTAMP,
+        version = version + 1
+      WHERE
+        id = $7
+        AND version = $8
+      RETURNING
+        id::text,
+        board_id::text AS "boardId",
+        closed,
+        created_at AS "createdAt",
+        description,
+        list_id::text AS "listId",
+        name,
+        rank,
+        updated_at AS "updatedAt",
+        version;
+    `;
+
+    const args = [
+      card.boardId,
+      card.closed,
+      card.description,
+      card.listId,
+      card.name,
+      card.rank,
+      card.id,
+      card.version,
+    ];
+
+    return [query, args];
+  }
+
+  static async #calcNewRankOnDuplicate(
+    client: PoolClient,
+    listId: string,
+    duplicateRank: string
+  ): Promise<string> {
+    const query = `--sql
+      SELECT
+        rank
+      FROM
+        cards
+      WHERE
+        list_id = $1
+        AND closed = false
+      ORDER BY
+        rank;
+    `;
+
+    const { rows: cards } = await client.query<Orderable>(query, [listId]);
+    const cardWithDuplicateRankIndex = findOrderableIndex(cards, duplicateRank);
+    if (cardWithDuplicateRankIndex === -1) {
+      throw new NoRecordError('card', 'rank', duplicateRank);
+    }
+
+    return calcItemRank(
+      cards[cardWithDuplicateRankIndex],
+      cards[cardWithDuplicateRankIndex + 1]
+    );
+  }
 }
 
 export default CardModel;
 
-export type { Card, UpdateManyUpdateMap };
+export type { Card, CardUpdateManyUpdateMap };

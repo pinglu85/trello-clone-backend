@@ -1,7 +1,7 @@
-import BoardModel from '../models/BoardModel';
+import { BoardModel } from '../models';
 import createLists from './createLists';
 import createCardsInList from './createCardsInList';
-import type { Card } from '../models/CardModel';
+import type { Card } from '../models';
 
 async function createWelcomeBoard(): Promise<void> {
   try {
