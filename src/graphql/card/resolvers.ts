@@ -1,13 +1,13 @@
 import { LexoRank } from 'lexorank';
 
-import { CardModel } from '../../models';
+import { CardModel, isErrorDuplicateRank } from '../../models';
 import {
   EditConflictError,
   NoRecordError,
   UpdateOnClosedItemError,
 } from '../utils/errors';
 import type { CardModule } from './generatedTypes/moduleTypes';
-import type { CardUpdateManyUpdateMap } from '../../models';
+import type { Card, CardUpdateManyUpdateMap } from '../../models';
 
 const Query: CardModule.QueryResolvers = {
   cards: (_, { listId }) => {
@@ -23,8 +23,19 @@ const Query: CardModule.QueryResolvers = {
 };
 
 const Mutation: CardModule.MutationResolvers = {
-  createCard: (_, { boardId, listId, name, rank }) => {
-    return CardModel.insert(boardId, listId, name, rank);
+  createCard: async (_, { boardId, listId, name, rank }) => {
+    try {
+      return await CardModel.insert(boardId, listId, name, rank);
+    } catch (error) {
+      if (!isErrorDuplicateRank(error)) throw error;
+
+      return await CardModel.resolveDuplicateRankOnInsert(
+        boardId,
+        listId,
+        name,
+        rank
+      );
+    }
   },
 
   moveAllCardsInList: async (
@@ -83,7 +94,16 @@ const Mutation: CardModule.MutationResolvers = {
     card.listId = newListId;
     card.rank = newRank;
 
-    const updatedCard = await CardModel.update(card);
+    let updatedCard: Card | null = null;
+
+    try {
+      updatedCard = await CardModel.update(card);
+    } catch (error) {
+      if (!isErrorDuplicateRank(error)) throw error;
+
+      updatedCard = await CardModel.resolveDuplicateRankOnUpdate(card);
+    }
+
     if (!updatedCard) throw new EditConflictError('card');
 
     return {
