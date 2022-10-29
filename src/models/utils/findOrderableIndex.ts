@@ -1,9 +1,6 @@
 import type { Orderable } from '../types';
 
-function findOrderableIndex<T extends Orderable>(
-  items: T[],
-  targetRank: string
-): number {
+function findOrderableIndex(items: Orderable[], targetRank: string): number {
   let left = 0;
   let right = items.length - 1;
 
