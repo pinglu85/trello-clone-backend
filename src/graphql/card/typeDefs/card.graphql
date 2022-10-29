@@ -1,5 +1,3 @@
-scalar JSONObject
-
 type Card {
   id: ID!
   boardId: String!
@@ -13,11 +11,6 @@ type Card {
 type Query {
   cards(listId: String!): [Card!]!
   card(id: ID!): Card!
-}
-
-type MoveAllCardsInListResult {
-  oldListId: String!
-  cards: [Card!]!
 }
 
 type MoveCardResult {
@@ -40,11 +33,10 @@ type Mutation {
   ): Card!
 
   moveAllCardsInList(
-    oldListId: String!
-    newBoardId: String!
-    newListId: String!
-    newRankMap: JSONObject!
-  ): MoveAllCardsInListResult!
+    sourceListId: String!
+    destinationBoardId: String!
+    destinationListId: String!
+  ): [Card!]!
 
   moveCard(
     id: ID!

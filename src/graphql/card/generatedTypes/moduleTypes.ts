@@ -12,7 +12,6 @@ export namespace CardModule {
       | 'name'
       | 'rank';
     Query: 'cards' | 'card';
-    MoveAllCardsInListResult: 'oldListId' | 'cards';
     MoveCardResult: 'oldListId' | 'card';
     Mutation: 'createCard' | 'moveAllCardsInList' | 'moveCard' | 'updateCard';
   }
@@ -23,10 +22,6 @@ export namespace CardModule {
 
   export type Card = Pick<Types.Card, DefinedFields['Card']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
-  export type MoveAllCardsInListResult = Pick<
-    Types.MoveAllCardsInListResult,
-    DefinedFields['MoveAllCardsInListResult']
-  >;
   export type MoveCardResult = Pick<
     Types.MoveCardResult,
     DefinedFields['MoveCardResult']
@@ -37,9 +32,6 @@ export namespace CardModule {
   >;
   export type Mutation = Pick<Types.Mutation, DefinedFields['Mutation']>;
 
-  export type Scalars = Pick<Types.Scalars, 'JSONObject'>;
-  export type JsonObjectScalarConfig = Types.JsonObjectScalarConfig;
-
   export type CardResolvers = Pick<
     Types.CardResolvers,
     DefinedFields['Card'] | '__isTypeOf'
@@ -47,10 +39,6 @@ export namespace CardModule {
   export type QueryResolvers = Pick<
     Types.QueryResolvers,
     DefinedFields['Query']
-  >;
-  export type MoveAllCardsInListResultResolvers = Pick<
-    Types.MoveAllCardsInListResultResolvers,
-    DefinedFields['MoveAllCardsInListResult'] | '__isTypeOf'
   >;
   export type MoveCardResultResolvers = Pick<
     Types.MoveCardResultResolvers,
@@ -64,10 +52,8 @@ export namespace CardModule {
   export interface Resolvers {
     Card?: CardResolvers;
     Query?: QueryResolvers;
-    MoveAllCardsInListResult?: MoveAllCardsInListResultResolvers;
     MoveCardResult?: MoveCardResultResolvers;
     Mutation?: MutationResolvers;
-    JSONObject?: Types.Resolvers['JSONObject'];
   }
 
   export interface MiddlewareMap {
@@ -88,11 +74,6 @@ export namespace CardModule {
       '*'?: gm.Middleware[];
       cards?: gm.Middleware[];
       card?: gm.Middleware[];
-    };
-    MoveAllCardsInListResult?: {
-      '*'?: gm.Middleware[];
-      oldListId?: gm.Middleware[];
-      cards?: gm.Middleware[];
     };
     MoveCardResult?: {
       '*'?: gm.Middleware[];
