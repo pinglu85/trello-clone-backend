@@ -69,11 +69,7 @@ class ListModel {
     name: string,
     rank: string
   ): Promise<List> {
-    const [query, args] = ListModel.#createInsertQueryAndArgs(
-      boardId,
-      name,
-      rank
-    );
+    const [query, args] = ListModel.#getInsertQueryAndArgs(boardId, name, rank);
 
     const { rows } = await pgPool.query<List>(query, args);
 
@@ -104,7 +100,7 @@ class ListModel {
         duplicateRank
       );
 
-      const [query, args] = ListModel.#createInsertQueryAndArgs(
+      const [query, args] = ListModel.#getInsertQueryAndArgs(
         boardId,
         name,
         newRank
@@ -154,7 +150,7 @@ class ListModel {
     }
   }
 
-  static #createInsertQueryAndArgs(
+  static #getInsertQueryAndArgs(
     boardId: string,
     name: string,
     rank: string
