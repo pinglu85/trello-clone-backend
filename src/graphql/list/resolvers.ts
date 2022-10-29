@@ -9,7 +9,7 @@ import type { List } from '../../models';
 
 const Query: ListModule.QueryResolvers = {
   lists: (_, { boardId }) => {
-    return ListModel.getAllByBoardId(boardId);
+    return ListModel.getAll(boardId);
   },
 
   list: async (_, { id }) => {
