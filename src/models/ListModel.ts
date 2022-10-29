@@ -39,7 +39,7 @@ class ListModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(boardId: string): Promise<List[]> {
+  static async getAllByBoardId(boardId: string): Promise<List[]> {
     const query = `--sql
       SELECT
         id::text,
