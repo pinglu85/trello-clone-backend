@@ -4,6 +4,7 @@ import pgPool from './pgPool';
 import findItemIndexByRank from './utils/findItemIndexByRank';
 import calcItemRank from './utils/calcItemRank';
 import NoRecordError from './errors';
+import type { Orderable } from './types';
 
 interface List {
   id: string;
@@ -220,7 +221,7 @@ class ListModel {
   ): Promise<string> {
     const query = `--sql
       SELECT
-        *
+        rank
       FROM
         lists
       WHERE
@@ -230,7 +231,7 @@ class ListModel {
         rank;
     `;
 
-    const { rows: lists } = await client.query<List>(query, [boardId]);
+    const { rows: lists } = await client.query<Orderable>(query, [boardId]);
     const listWithDuplicateRankIndex = findItemIndexByRank(
       lists,
       duplicateRank

@@ -1,4 +1,4 @@
-import type { Orderable } from './types';
+import type { Orderable } from '../types';
 
 function findItemIndexByRank<T extends Orderable>(
   items: T[],
