@@ -225,6 +225,7 @@ class ListModel {
         lists
       WHERE
         board_id = $1
+        AND closed = false
       ORDER BY
         rank;
     `;
