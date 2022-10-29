@@ -1,6 +1,6 @@
 import type { Orderable } from '../types';
 
-function findItemIndexByRank<T extends Orderable>(
+function findOrderableIndex<T extends Orderable>(
   items: T[],
   targetRank: string
 ): number {
@@ -23,4 +23,4 @@ function findItemIndexByRank<T extends Orderable>(
   return -1;
 }
 
-export default findItemIndexByRank;
+export default findOrderableIndex;

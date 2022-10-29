@@ -1,7 +1,7 @@
 import type { PoolClient } from 'pg';
 
 import pgPool from './pgPool';
-import findItemIndexByRank from './utils/findItemIndexByRank';
+import findOrderableIndex from './utils/findOrderableIndex';
 import calcItemRank from './utils/calcItemRank';
 import NoRecordError from './errors';
 import type { Orderable } from './types';
@@ -232,10 +232,7 @@ class ListModel {
     `;
 
     const { rows: lists } = await client.query<Orderable>(query, [boardId]);
-    const listWithDuplicateRankIndex = findItemIndexByRank(
-      lists,
-      duplicateRank
-    );
+    const listWithDuplicateRankIndex = findOrderableIndex(lists, duplicateRank);
 
     if (listWithDuplicateRankIndex === -1) {
       throw new NoRecordError('list', 'rank', duplicateRank);
