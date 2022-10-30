@@ -37,7 +37,7 @@ async function startApolloServer(
   }
 
   try {
-    await pgPool.createConnection(databaseUrl);
+    await pgPool.open(databaseUrl);
     await server.start();
 
     app.use(

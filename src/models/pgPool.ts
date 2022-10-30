@@ -10,7 +10,7 @@ class PgPool {
     this.#pool = null;
   }
 
-  async createConnection(connectionString: string): Promise<void> {
+  async open(connectionString: string): Promise<void> {
     this.#pool = new Pool({
       connectionString,
     });
