@@ -1,6 +1,6 @@
 import { BoardModel, ListModel } from '../../models';
 import getBoardBackground from './utils/getBoardBackground';
-import { EditConflictError, NoRecordError } from '../utils/errors';
+import { EditConflictError, NoRecordError } from '../errors';
 import type { BoardModule } from './generatedTypes/moduleTypes';
 
 const Query: BoardModule.QueryResolvers = {
