@@ -1,4 +1,4 @@
-schema: './src/graphql/**/typeDefs/*.graphql'
+schema: './src/graphql/**/*.graphql'
 generates:
   ./src/graphql/:
     preset: graphql-modules
