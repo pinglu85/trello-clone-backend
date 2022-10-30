@@ -5,7 +5,7 @@ import {
   EditConflictError,
   NoRecordError,
   UpdateOnClosedItemError,
-} from '../utils/errors';
+} from '../errors';
 import type { CardModule } from './generatedTypes/moduleTypes';
 import type { Card, CardUpdateManyUpdateMap } from '../../models';
 

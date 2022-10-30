@@ -3,7 +3,7 @@ import {
   EditConflictError,
   NoRecordError,
   UpdateOnClosedItemError,
-} from '../utils/errors';
+} from '../errors';
 import type { ListModule } from './generatedTypes/moduleTypes';
 import type { List } from '../../models';
 
