@@ -42,14 +42,13 @@ const Mutation: ListModule.MutationResolvers = {
     };
   },
 
-  moveList: async (_, { id, newBoardId, newRank }) => {
+  moveList: async (_, { id, destinationBoardId, newRank }) => {
     const list = await ListModel.get(id);
     if (!list) throw new NoRecordError('List');
 
     if (list.closed) throw new UpdateOnClosedItemError('list');
 
-    const oldBoardId = list.boardId;
-    list.boardId = newBoardId;
+    list.boardId = destinationBoardId;
     list.rank = newRank;
 
     let updatedList: List | null = null;
@@ -64,12 +63,7 @@ const Mutation: ListModule.MutationResolvers = {
 
     if (!updatedList) throw new EditConflictError('list');
 
-    return {
-      id,
-      boardId: updatedList.boardId,
-      oldBoardId,
-      rank: updatedList.rank,
-    };
+    return updatedList;
   },
 
   updateList: async (_, { id, updates: { closed, name } }) => {
