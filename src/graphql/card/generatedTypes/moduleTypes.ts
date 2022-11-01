@@ -12,7 +12,6 @@ export namespace CardModule {
       | 'name'
       | 'rank';
     Query: 'cards' | 'card';
-    MoveCardResult: 'oldListId' | 'card';
     Mutation: 'createCard' | 'moveAllCardsInList' | 'moveCard' | 'updateCard';
   }
 
@@ -22,10 +21,6 @@ export namespace CardModule {
 
   export type Card = Pick<Types.Card, DefinedFields['Card']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
-  export type MoveCardResult = Pick<
-    Types.MoveCardResult,
-    DefinedFields['MoveCardResult']
-  >;
   export type CardUpdates = Pick<
     Types.CardUpdates,
     DefinedInputFields['CardUpdates']
@@ -40,10 +35,6 @@ export namespace CardModule {
     Types.QueryResolvers,
     DefinedFields['Query']
   >;
-  export type MoveCardResultResolvers = Pick<
-    Types.MoveCardResultResolvers,
-    DefinedFields['MoveCardResult'] | '__isTypeOf'
-  >;
   export type MutationResolvers = Pick<
     Types.MutationResolvers,
     DefinedFields['Mutation']
@@ -52,7 +43,6 @@ export namespace CardModule {
   export interface Resolvers {
     Card?: CardResolvers;
     Query?: QueryResolvers;
-    MoveCardResult?: MoveCardResultResolvers;
     Mutation?: MutationResolvers;
   }
 
@@ -73,11 +63,6 @@ export namespace CardModule {
     Query?: {
       '*'?: gm.Middleware[];
       cards?: gm.Middleware[];
-      card?: gm.Middleware[];
-    };
-    MoveCardResult?: {
-      '*'?: gm.Middleware[];
-      oldListId?: gm.Middleware[];
       card?: gm.Middleware[];
     };
     Mutation?: {

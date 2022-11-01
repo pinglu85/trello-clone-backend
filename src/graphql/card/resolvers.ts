@@ -83,15 +83,17 @@ const Mutation: CardModule.MutationResolvers = {
     return updatedCards;
   },
 
-  moveCard: async (_, { id, newBoardId, newListId, newRank }) => {
+  moveCard: async (
+    _,
+    { id, destinationBoardId, destinationListId, newRank }
+  ) => {
     const card = await CardModel.get(id);
     if (!card) throw new NoRecordError('Card');
 
     if (card.closed) throw new UpdateOnClosedItemError('card');
 
-    const oldListId = card.listId;
-    card.boardId = newBoardId;
-    card.listId = newListId;
+    card.boardId = destinationBoardId;
+    card.listId = destinationListId;
     card.rank = newRank;
 
     let updatedCard: Card | null = null;
@@ -106,10 +108,7 @@ const Mutation: CardModule.MutationResolvers = {
 
     if (!updatedCard) throw new EditConflictError('card');
 
-    return {
-      oldListId,
-      card: updatedCard,
-    };
+    return updatedCard;
   },
 
   updateCard: async (_, { id, updates: { closed, description, name } }) => {

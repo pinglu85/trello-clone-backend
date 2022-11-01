@@ -13,11 +13,6 @@ type Query {
   card(id: ID!): Card!
 }
 
-type MoveCardResult {
-  oldListId: String!
-  card: Card!
-}
-
 input CardUpdates {
   closed: Boolean
   description: String
@@ -40,10 +35,11 @@ type Mutation {
 
   moveCard(
     id: ID!
-    newBoardId: String!
-    newListId: String!
+    sourceListId: String!
+    destinationBoardId: String!
+    destinationListId: String!
     newRank: String!
-  ): MoveCardResult!
+  ): Card!
 
   updateCard(id: ID!, updates: CardUpdates!): Card!
 }
