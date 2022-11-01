@@ -12,13 +12,6 @@ type Query {
   list(id: ID!): List!
 }
 
-type MoveListResult {
-  id: ID!
-  boardId: String!
-  oldBoardId: String!
-  rank: String!
-}
-
 input ListUpdates {
   closed: Boolean
   name: String
@@ -31,6 +24,13 @@ type Mutation {
     rank: String!
     sourceListId: ID
   ): List!
-  moveList(id: ID!, newBoardId: String!, newRank: String!): MoveListResult!
+
+  moveList(
+    id: ID!
+    sourceBoardId: String!
+    destinationBoardId: String!
+    newRank: String!
+  ): List!
+
   updateList(id: ID!, updates: ListUpdates!): List!
 }
