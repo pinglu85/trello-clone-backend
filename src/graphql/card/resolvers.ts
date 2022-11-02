@@ -116,7 +116,7 @@ const Mutation: CardModule.MutationResolvers = {
     const card = await CardModel.get(id);
     if (!card) throw new NoRecordError('Card');
 
-    if (closed) card.closed = closed;
+    if (typeof closed === 'boolean') card.closed = closed;
 
     if (description) card.description = description;
 
