@@ -25,12 +25,12 @@ class PgPool {
   }
 
   query<R extends QueryResultRow>(
-    query: string,
+    queryText: string,
     args?: unknown[]
   ): Promise<QueryResult<R>> {
     if (!this.#pool) throw ErrPoolNotCreated;
 
-    return this.#pool.query<R>(query, args);
+    return this.#pool.query<R>(queryText, args);
   }
 
   close(): Promise<void> {

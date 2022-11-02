@@ -19,7 +19,7 @@ interface List {
 
 class ListModel {
   static async delete(id: string): Promise<boolean> {
-    const query = `--sql
+    const queryText = `--sql
       DELETE FROM
         lists
       WHERE
@@ -27,13 +27,13 @@ class ListModel {
         AND closed = true;
     `;
 
-    const { rows } = await pgPool.query(query, [id]);
+    const { rows } = await pgPool.query(queryText, [id]);
 
     return rows.length === 1;
   }
 
   static async get(id: string): Promise<List | null> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         id::text,
         board_id::text AS "boardId",
@@ -49,13 +49,13 @@ class ListModel {
         id = $1;
     `;
 
-    const { rows } = await pgPool.query<List>(query, [id]);
+    const { rows } = await pgPool.query<List>(queryText, [id]);
 
     return rows.length === 0 ? null : rows[0];
   }
 
   static async getAll(boardId: string, closed: boolean): Promise<List[]> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         id::text,
         board_id::text AS "boardId",
@@ -74,7 +74,7 @@ class ListModel {
         rank;     
     `;
 
-    const { rows } = await pgPool.query<List>(query, [boardId, closed]);
+    const { rows } = await pgPool.query<List>(queryText, [boardId, closed]);
 
     return rows;
   }
@@ -84,17 +84,21 @@ class ListModel {
     name: string,
     rank: string
   ): Promise<List> {
-    const [query, args] = ListModel.#getInsertQueryAndArgs(boardId, name, rank);
+    const [queryText, args] = ListModel.#getInsertQueryTextAndArgs(
+      boardId,
+      name,
+      rank
+    );
 
-    const { rows } = await pgPool.query<List>(query, args);
+    const { rows } = await pgPool.query<List>(queryText, args);
 
     return rows[0];
   }
 
   static async update(list: List): Promise<List | null> {
-    const [query, args] = ListModel.#getUpdateQueryAndArgs(list);
+    const [queryText, args] = ListModel.#getUpdateQueryTextAndArgs(list);
 
-    const { rows } = await pgPool.query<List>(query, args);
+    const { rows } = await pgPool.query<List>(queryText, args);
 
     return rows.length === 0 ? null : rows[0];
   }
@@ -115,13 +119,13 @@ class ListModel {
         duplicateRank
       );
 
-      const [query, args] = ListModel.#getInsertQueryAndArgs(
+      const [queryText, args] = ListModel.#getInsertQueryTextAndArgs(
         boardId,
         name,
         newRank
       );
 
-      const { rows } = await client.query<List>(query, args);
+      const { rows } = await client.query<List>(queryText, args);
 
       await client.query('COMMIT');
 
@@ -149,9 +153,9 @@ class ListModel {
 
       list.rank = newRank;
 
-      const [query, args] = ListModel.#getUpdateQueryAndArgs(list);
+      const [queryText, args] = ListModel.#getUpdateQueryTextAndArgs(list);
 
-      const { rows } = await client.query<List>(query, args);
+      const { rows } = await client.query<List>(queryText, args);
 
       await client.query('COMMIT');
 
@@ -165,12 +169,12 @@ class ListModel {
     }
   }
 
-  static #getInsertQueryAndArgs(
+  static #getInsertQueryTextAndArgs(
     boardId: string,
     name: string,
     rank: string
-  ): [query: string, args: unknown[]] {
-    const query = `--sql
+  ): [queryText: string, args: unknown[]] {
+    const queryText = `--sql
       INSERT INTO
         lists (board_id, name, rank)
       VALUES
@@ -188,11 +192,13 @@ class ListModel {
 
     const args = [boardId, name, rank];
 
-    return [query, args];
+    return [queryText, args];
   }
 
-  static #getUpdateQueryAndArgs(list: List): [query: string, args: unknown[]] {
-    const query = `--sql
+  static #getUpdateQueryTextAndArgs(
+    list: List
+  ): [queryText: string, args: unknown[]] {
+    const queryText = `--sql
       UPDATE
         lists
       SET
@@ -225,7 +231,7 @@ class ListModel {
       list.version,
     ];
 
-    return [query, args];
+    return [queryText, args];
   }
 
   static async #calcNewRankOnDuplicate(
@@ -233,7 +239,7 @@ class ListModel {
     boardId: string,
     duplicateRank: string
   ): Promise<string> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         rank
       FROM
@@ -245,7 +251,7 @@ class ListModel {
         rank;
     `;
 
-    const { rows: lists } = await client.query<Orderable>(query, [boardId]);
+    const { rows: lists } = await client.query<Orderable>(queryText, [boardId]);
     const listWithDuplicateRankIndex = findOrderableIndex(lists, duplicateRank);
 
     if (listWithDuplicateRankIndex === -1) {
