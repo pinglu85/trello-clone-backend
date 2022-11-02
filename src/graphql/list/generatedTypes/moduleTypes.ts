@@ -5,7 +5,7 @@ export namespace ListModule {
   interface DefinedFields {
     List: 'id' | 'boardId' | 'cards' | 'closed' | 'name' | 'rank';
     Query: 'lists' | 'list';
-    Mutation: 'createList' | 'moveList' | 'updateList';
+    Mutation: 'createList' | 'deleteList' | 'moveList' | 'updateList';
   }
 
   interface DefinedInputFields {
@@ -61,6 +61,7 @@ export namespace ListModule {
     Mutation?: {
       '*'?: gm.Middleware[];
       createList?: gm.Middleware[];
+      deleteList?: gm.Middleware[];
       moveList?: gm.Middleware[];
       updateList?: gm.Middleware[];
     };

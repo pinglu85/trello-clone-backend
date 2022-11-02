@@ -1,15 +1,11 @@
 import { ListModel, CardModel, isErrorDuplicateRank } from '../../models';
-import {
-  EditConflictError,
-  NoRecordError,
-  UpdateOnClosedItemError,
-} from '../errors';
+import { EditConflictError, NoRecordError } from '../errors';
 import type { ListModule } from './generatedTypes/moduleTypes';
 import type { List } from '../../models';
 
 const Query: ListModule.QueryResolvers = {
-  lists: (_, { boardId }) => {
-    return ListModel.getAll(boardId);
+  lists: (_, { boardId, closed }) => {
+    return ListModel.getAll(boardId, closed);
   },
 
   list: async (_, { id }) => {
@@ -42,11 +38,13 @@ const Mutation: ListModule.MutationResolvers = {
     };
   },
 
+  deleteList: (_, { id }) => {
+    return ListModel.delete(id);
+  },
+
   moveList: async (_, { id, destinationBoardId, newRank }) => {
     const list = await ListModel.get(id);
     if (!list) throw new NoRecordError('List');
-
-    if (list.closed) throw new UpdateOnClosedItemError('list');
 
     list.boardId = destinationBoardId;
     list.rank = newRank;
@@ -70,9 +68,7 @@ const Mutation: ListModule.MutationResolvers = {
     const list = await ListModel.get(id);
     if (!list) throw new NoRecordError('List');
 
-    if (list.closed) throw new UpdateOnClosedItemError('list');
-
-    if (closed) list.closed = closed;
+    if (typeof closed === 'boolean') list.closed = closed;
 
     if (name) list.name = name;
 
@@ -87,7 +83,7 @@ const List: ListModule.ListResolvers = {
   cards: (list) => {
     if (!list.id) return [];
 
-    return CardModel.getAll(list.id);
+    return CardModel.getAll(list.id, false);
   },
 };
 

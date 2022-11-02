@@ -1,17 +1,13 @@
 import { LexoRank } from 'lexorank';
 
 import { CardModel, isErrorDuplicateRank } from '../../models';
-import {
-  EditConflictError,
-  NoRecordError,
-  UpdateOnClosedItemError,
-} from '../errors';
+import { EditConflictError, NoRecordError } from '../errors';
 import type { CardModule } from './generatedTypes/moduleTypes';
 import type { Card, CardUpdateManyUpdateMap } from '../../models';
 
 const Query: CardModule.QueryResolvers = {
-  cards: (_, { listId }) => {
-    return CardModel.getAll(listId);
+  cards: (_, { listId, closed }) => {
+    return CardModel.getAll(listId, closed);
   },
 
   card: async (_, { id }) => {
@@ -38,6 +34,10 @@ const Mutation: CardModule.MutationResolvers = {
     }
   },
 
+  deleteCard: (_, { id }) => {
+    return CardModel.delete(id);
+  },
+
   moveAllCardsInList: async (
     _,
     { sourceListId, destinationBoardId, destinationListId }
@@ -53,11 +53,14 @@ const Mutation: CardModule.MutationResolvers = {
       version: [],
     };
 
-    const cardsInDestinationList = await CardModel.getAll(destinationListId);
+    const cardsInDestinationList = await CardModel.getAll(
+      destinationListId,
+      false
+    );
     const lastCard = getLast(cardsInDestinationList);
     let prevCardLexoRank = lastCard && LexoRank.parse(lastCard.rank);
 
-    const cards = await CardModel.getAll(sourceListId);
+    const cards = await CardModel.getAll(sourceListId, false);
 
     for (const card of cards) {
       const newLexoRank = prevCardLexoRank
@@ -90,8 +93,6 @@ const Mutation: CardModule.MutationResolvers = {
     const card = await CardModel.get(id);
     if (!card) throw new NoRecordError('Card');
 
-    if (card.closed) throw new UpdateOnClosedItemError('card');
-
     card.boardId = destinationBoardId;
     card.listId = destinationListId;
     card.rank = newRank;
@@ -115,9 +116,7 @@ const Mutation: CardModule.MutationResolvers = {
     const card = await CardModel.get(id);
     if (!card) throw new NoRecordError('Card');
 
-    if (card.closed) throw new UpdateOnClosedItemError('card');
-
-    if (closed) card.closed = closed;
+    if (typeof closed === 'boolean') card.closed = closed;
 
     if (description) card.description = description;
 
