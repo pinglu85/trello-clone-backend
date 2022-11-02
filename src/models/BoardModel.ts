@@ -13,7 +13,7 @@ interface Board {
 
 class BoardModel {
   static async delete(id: string): Promise<boolean> {
-    const query = `--sql
+    const queryText = `--sql
       DELETE FROM
         boards
       WHERE
@@ -21,13 +21,13 @@ class BoardModel {
         AND closed = true;
     `;
 
-    const { rowCount } = await pgPool.query(query, [id]);
+    const { rowCount } = await pgPool.query(queryText, [id]);
 
     return rowCount === 1;
   }
 
   static async get(id: string): Promise<Board | null> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         id::text,
         background_color AS "backgroundColor",
@@ -43,13 +43,13 @@ class BoardModel {
         id = $1;
     `;
 
-    const { rows } = await pgPool.query<Board>(query, [id]);
+    const { rows } = await pgPool.query<Board>(queryText, [id]);
 
     return rows.length === 0 ? null : rows[0];
   }
 
   static async getAll(closed: boolean): Promise<Board[]> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         id::text,
         background_color AS "backgroundColor",
@@ -65,7 +65,7 @@ class BoardModel {
         closed = $1;
     `;
 
-    const { rows } = await pgPool.query<Board>(query, [closed]);
+    const { rows } = await pgPool.query<Board>(queryText, [closed]);
 
     return rows;
   }
@@ -75,7 +75,7 @@ class BoardModel {
     backgroundImage: string | null,
     name: string
   ): Promise<Board> {
-    const query = `--sql
+    const queryText = `--sql
       INSERT INTO
         boards (background_color, background_image, name)
       VALUES
@@ -91,7 +91,7 @@ class BoardModel {
         version;
     `;
 
-    const { rows } = await pgPool.query<Board>(query, [
+    const { rows } = await pgPool.query<Board>(queryText, [
       backgroundColor,
       backgroundImage,
       name,
@@ -101,7 +101,7 @@ class BoardModel {
   }
 
   static async update(board: Board): Promise<Board | null> {
-    const query = `--sql
+    const queryText = `--sql
       UPDATE
         boards
       SET
@@ -125,7 +125,7 @@ class BoardModel {
         version;
     `;
 
-    const { rows } = await pgPool.query<Board>(query, [
+    const { rows } = await pgPool.query<Board>(queryText, [
       board.backgroundColor,
       board.backgroundImage,
       board.closed,

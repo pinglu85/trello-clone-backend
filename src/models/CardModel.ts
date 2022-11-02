@@ -32,7 +32,7 @@ interface CardUpdateManyUpdateMap {
 
 class CardModel {
   static async delete(id: string): Promise<boolean> {
-    const query = `--sql
+    const queryText = `--sql
       DELETE FROM
         cards
       WHERE
@@ -40,13 +40,13 @@ class CardModel {
         AND closed = true;
     `;
 
-    const { rows } = await pgPool.query(query, [id]);
+    const { rows } = await pgPool.query(queryText, [id]);
 
     return rows.length === 1;
   }
 
   static async get(id: string): Promise<Card | null> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         id::text,
         board_id AS "boardId",
@@ -64,13 +64,13 @@ class CardModel {
         id = $1;
     `;
 
-    const { rows } = await pgPool.query<Card>(query, [id]);
+    const { rows } = await pgPool.query<Card>(queryText, [id]);
 
     return rows.length === 0 ? null : rows[0];
   }
 
   static async getAll(listId: string, closed: boolean): Promise<Card[]> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         id::text,
         board_id::text AS "boardId",
@@ -91,7 +91,7 @@ class CardModel {
         rank;    
     `;
 
-    const { rows } = await pgPool.query<Card>(query, [listId, closed]);
+    const { rows } = await pgPool.query<Card>(queryText, [listId, closed]);
 
     return rows;
   }
@@ -102,14 +102,14 @@ class CardModel {
     name: string,
     rank: string
   ): Promise<Card> {
-    const [query, args] = CardModel.#getInsertQueryAndArgs(
+    const [queryText, args] = CardModel.#getInsertQueryTextAndArgs(
       boardId,
       listId,
       name,
       rank
     );
 
-    const { rows } = await pgPool.query<Card>(query, args);
+    const { rows } = await pgPool.query<Card>(queryText, args);
 
     return rows[0];
   }
@@ -118,7 +118,7 @@ class CardModel {
     oldListId: string,
     newListId: string
   ): Promise<Card[]> {
-    const query = `--sql
+    const queryText = `--sql
       WITH inserted AS (
         INSERT INTO 
           cards (board_id, description, list_id, name, rank) (
@@ -154,21 +154,24 @@ class CardModel {
         rank;    
     `;
 
-    const { rows } = await pgPool.query<Card>(query, [newListId, oldListId]);
+    const { rows } = await pgPool.query<Card>(queryText, [
+      newListId,
+      oldListId,
+    ]);
 
     return rows;
   }
 
   static async update(card: Card): Promise<Card | null> {
-    const [query, args] = CardModel.#getUpdateQueryAndArgs(card);
+    const [queryText, args] = CardModel.#getUpdateQueryTextAndArgs(card);
 
-    const { rows } = await pgPool.query<Card>(query, args);
+    const { rows } = await pgPool.query<Card>(queryText, args);
 
     return rows.length === 0 ? null : rows[0];
   }
 
   static async updateMany(updateMap: CardUpdateManyUpdateMap): Promise<Card[]> {
-    const query = `--sql
+    const queryText = `--sql
       WITH data AS (
         SELECT
           *
@@ -221,7 +224,7 @@ class CardModel {
         rank;
     `;
 
-    const { rows } = await pgPool.query<Card>(query, [
+    const { rows } = await pgPool.query<Card>(queryText, [
       updateMap.id,
       updateMap.boardId,
       updateMap.closed,
@@ -252,14 +255,14 @@ class CardModel {
         duplicateRank
       );
 
-      const [query, args] = CardModel.#getInsertQueryAndArgs(
+      const [queryText, args] = CardModel.#getInsertQueryTextAndArgs(
         boardId,
         listId,
         name,
         newRank
       );
 
-      const { rows } = await client.query<Card>(query, args);
+      const { rows } = await client.query<Card>(queryText, args);
 
       await client.query('COMMIT');
 
@@ -287,9 +290,9 @@ class CardModel {
 
       card.rank = newRank;
 
-      const [query, args] = CardModel.#getUpdateQueryAndArgs(card);
+      const [queryText, args] = CardModel.#getUpdateQueryTextAndArgs(card);
 
-      const { rows } = await client.query<Card>(query, args);
+      const { rows } = await client.query<Card>(queryText, args);
 
       await client.query('COMMIT');
 
@@ -303,13 +306,13 @@ class CardModel {
     }
   }
 
-  static #getInsertQueryAndArgs(
+  static #getInsertQueryTextAndArgs(
     boardId: string,
     listId: string,
     name: string,
     rank: string
-  ): [query: string, args: unknown[]] {
-    const query = `--sql
+  ): [queryText: string, args: unknown[]] {
+    const queryText = `--sql
       INSERT INTO
         cards (board_id, list_id, name, rank)
       VALUES
@@ -329,11 +332,13 @@ class CardModel {
 
     const args = [boardId, listId, name, rank];
 
-    return [query, args];
+    return [queryText, args];
   }
 
-  static #getUpdateQueryAndArgs(card: Card): [query: string, args: unknown[]] {
-    const query = `--sql
+  static #getUpdateQueryTextAndArgs(
+    card: Card
+  ): [queryText: string, args: unknown[]] {
+    const queryText = `--sql
       UPDATE
         cards
       SET
@@ -372,7 +377,7 @@ class CardModel {
       card.version,
     ];
 
-    return [query, args];
+    return [queryText, args];
   }
 
   static async #calcNewRankOnDuplicate(
@@ -380,7 +385,7 @@ class CardModel {
     listId: string,
     duplicateRank: string
   ): Promise<string> {
-    const query = `--sql
+    const queryText = `--sql
       SELECT
         rank
       FROM
@@ -392,7 +397,7 @@ class CardModel {
         rank;
     `;
 
-    const { rows: cards } = await client.query<Orderable>(query, [listId]);
+    const { rows: cards } = await client.query<Orderable>(queryText, [listId]);
     const cardWithDuplicateRankIndex = findOrderableIndex(cards, duplicateRank);
     if (cardWithDuplicateRankIndex === -1) {
       throw new NoRecordError('card', 'rank', duplicateRank);
