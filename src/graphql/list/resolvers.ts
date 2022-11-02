@@ -8,8 +8,8 @@ import type { ListModule } from './generatedTypes/moduleTypes';
 import type { List } from '../../models';
 
 const Query: ListModule.QueryResolvers = {
-  lists: (_, { boardId }) => {
-    return ListModel.getAll(boardId);
+  lists: (_, { boardId, closed }) => {
+    return ListModel.getAll(boardId, closed);
   },
 
   list: async (_, { id }) => {
@@ -42,6 +42,10 @@ const Mutation: ListModule.MutationResolvers = {
     };
   },
 
+  deleteList: (_, { id }) => {
+    return ListModel.delete(id);
+  },
+
   moveList: async (_, { id, destinationBoardId, newRank }) => {
     const list = await ListModel.get(id);
     if (!list) throw new NoRecordError('List');
@@ -70,9 +74,7 @@ const Mutation: ListModule.MutationResolvers = {
     const list = await ListModel.get(id);
     if (!list) throw new NoRecordError('List');
 
-    if (list.closed) throw new UpdateOnClosedItemError('list');
-
-    if (closed) list.closed = closed;
+    if (typeof closed === 'boolean') list.closed = closed;
 
     if (name) list.name = name;
 

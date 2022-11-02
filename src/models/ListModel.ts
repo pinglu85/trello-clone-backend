@@ -18,6 +18,20 @@ interface List {
 }
 
 class ListModel {
+  static async delete(id: string): Promise<boolean> {
+    const query = `--sql
+      DELETE FROM
+        lists
+      WHERE
+        id = $1
+        AND closed = true;
+    `;
+
+    const { rows } = await pgPool.query(query, [id]);
+
+    return rows.length === 1;
+  }
+
   static async get(id: string): Promise<List | null> {
     const query = `--sql
       SELECT
@@ -40,7 +54,7 @@ class ListModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(boardId: string): Promise<List[]> {
+  static async getAll(boardId: string, closed: boolean): Promise<List[]> {
     const query = `--sql
       SELECT
         id::text,
@@ -55,12 +69,12 @@ class ListModel {
         lists
       WHERE
         board_id = $1
-        AND closed = false
+        AND closed = $2
       ORDER BY
         rank;     
     `;
 
-    const { rows } = await pgPool.query<List>(query, [boardId]);
+    const { rows } = await pgPool.query<List>(query, [boardId, closed]);
 
     return rows;
   }

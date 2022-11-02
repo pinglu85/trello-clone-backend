@@ -53,7 +53,7 @@ const Board: BoardModule.BoardResolvers = {
   lists: (board) => {
     if (!board.id) return [];
 
-    return ListModel.getAll(board.id);
+    return ListModel.getAll(board.id, false);
   },
 };
 
