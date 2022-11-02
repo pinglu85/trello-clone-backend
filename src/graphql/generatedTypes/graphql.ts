@@ -69,6 +69,7 @@ export type Mutation = {
   createCard: Card;
   createList: List;
   deleteBoard: Scalars['Boolean'];
+  deleteCard: Scalars['Boolean'];
   moveAllCardsInList: Array<Card>;
   moveCard: Card;
   moveList: List;
@@ -101,6 +102,11 @@ export type MutationCreateListArgs = {
 
 
 export type MutationDeleteBoardArgs = {
+  id: Scalars['ID'];
+};
+
+
+export type MutationDeleteCardArgs = {
   id: Scalars['ID'];
 };
 
@@ -173,6 +179,7 @@ export type QueryCardArgs = {
 
 
 export type QueryCardsArgs = {
+  closed: Scalars['Boolean'];
   listId: Scalars['String'];
 };
 
@@ -320,6 +327,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'boardId' | 'listId' | 'name' | 'rank'>>;
   createList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationCreateListArgs, 'boardId' | 'name' | 'rank'>>;
   deleteBoard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteBoardArgs, 'id'>>;
+  deleteCard?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationDeleteCardArgs, 'id'>>;
   moveAllCardsInList?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType, RequireFields<MutationMoveAllCardsInListArgs, 'destinationBoardId' | 'destinationListId' | 'sourceListId'>>;
   moveCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationMoveCardArgs, 'destinationBoardId' | 'destinationListId' | 'id' | 'newRank' | 'sourceListId'>>;
   moveList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationMoveListArgs, 'destinationBoardId' | 'id' | 'newRank' | 'sourceBoardId'>>;
@@ -332,7 +340,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   board?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<QueryBoardArgs, 'id'>>;
   boards?: Resolver<Array<ResolversTypes['Board']>, ParentType, ContextType, RequireFields<QueryBoardsArgs, 'closed'>>;
   card?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<QueryCardArgs, 'id'>>;
-  cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType, RequireFields<QueryCardsArgs, 'listId'>>;
+  cards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType, RequireFields<QueryCardsArgs, 'closed' | 'listId'>>;
   list?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<QueryListArgs, 'id'>>;
   lists?: Resolver<Array<ResolversTypes['List']>, ParentType, ContextType, RequireFields<QueryListsArgs, 'boardId'>>;
 }>;

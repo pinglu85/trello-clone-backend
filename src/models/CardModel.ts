@@ -31,6 +31,20 @@ interface CardUpdateManyUpdateMap {
 }
 
 class CardModel {
+  static async delete(id: string): Promise<boolean> {
+    const query = `--sql
+      DELETE FROM
+        cards
+      WHERE
+        id = $1
+        AND closed = true;
+    `;
+
+    const { rows } = await pgPool.query(query, [id]);
+
+    return rows.length === 1;
+  }
+
   static async get(id: string): Promise<Card | null> {
     const query = `--sql
       SELECT
@@ -55,7 +69,7 @@ class CardModel {
     return rows.length === 0 ? null : rows[0];
   }
 
-  static async getAll(listId: string): Promise<Card[]> {
+  static async getAll(listId: string, closed: boolean): Promise<Card[]> {
     const query = `--sql
       SELECT
         id::text,
@@ -72,12 +86,12 @@ class CardModel {
         cards
       WHERE
         list_id = $1
-        AND closed = false
+        AND closed = $2
       ORDER BY
         rank;    
     `;
 
-    const { rows } = await pgPool.query<Card>(query, [listId]);
+    const { rows } = await pgPool.query<Card>(query, [listId, closed]);
 
     return rows;
   }

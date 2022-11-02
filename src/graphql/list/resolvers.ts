@@ -87,7 +87,7 @@ const List: ListModule.ListResolvers = {
   cards: (list) => {
     if (!list.id) return [];
 
-    return CardModel.getAll(list.id);
+    return CardModel.getAll(list.id, false);
   },
 };
 

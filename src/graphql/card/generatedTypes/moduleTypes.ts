@@ -12,7 +12,12 @@ export namespace CardModule {
       | 'name'
       | 'rank';
     Query: 'cards' | 'card';
-    Mutation: 'createCard' | 'moveAllCardsInList' | 'moveCard' | 'updateCard';
+    Mutation:
+      | 'createCard'
+      | 'deleteCard'
+      | 'moveAllCardsInList'
+      | 'moveCard'
+      | 'updateCard';
   }
 
   interface DefinedInputFields {
@@ -68,6 +73,7 @@ export namespace CardModule {
     Mutation?: {
       '*'?: gm.Middleware[];
       createCard?: gm.Middleware[];
+      deleteCard?: gm.Middleware[];
       moveAllCardsInList?: gm.Middleware[];
       moveCard?: gm.Middleware[];
       updateCard?: gm.Middleware[];
