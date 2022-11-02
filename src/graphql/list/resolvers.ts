@@ -1,9 +1,5 @@
 import { ListModel, CardModel, isErrorDuplicateRank } from '../../models';
-import {
-  EditConflictError,
-  NoRecordError,
-  UpdateOnClosedItemError,
-} from '../errors';
+import { EditConflictError, NoRecordError } from '../errors';
 import type { ListModule } from './generatedTypes/moduleTypes';
 import type { List } from '../../models';
 
@@ -49,8 +45,6 @@ const Mutation: ListModule.MutationResolvers = {
   moveList: async (_, { id, destinationBoardId, newRank }) => {
     const list = await ListModel.get(id);
     if (!list) throw new NoRecordError('List');
-
-    if (list.closed) throw new UpdateOnClosedItemError('list');
 
     list.boardId = destinationBoardId;
     list.rank = newRank;

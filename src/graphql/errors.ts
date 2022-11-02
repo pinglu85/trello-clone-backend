@@ -34,21 +34,8 @@ class NoRecordError extends GraphQLError {
   }
 }
 
-class UpdateOnClosedItemError extends UserInputError {
-  constructor(itemName: string) {
-    super(
-      `Cannot update the ${itemName.toLowerCase()} that has/have been already archived.`
-    );
-  }
-}
-
 function capitalizeFirstLetter(str: string): string {
   return str[0].toUpperCase() + str.slice(1);
 }
 
-export {
-  UserInputError,
-  EditConflictError,
-  NoRecordError,
-  UpdateOnClosedItemError,
-};
+export { UserInputError, EditConflictError, NoRecordError };
