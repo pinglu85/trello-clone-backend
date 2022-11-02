@@ -12,6 +12,20 @@ interface Board {
 }
 
 class BoardModel {
+  static async delete(id: string): Promise<boolean> {
+    const query = `--sql
+      DELETE FROM
+        boards
+      WHERE
+        id = $1
+        AND closed = true;
+    `;
+
+    const { rowCount } = await pgPool.query(query, [id]);
+
+    return rowCount === 1;
+  }
+
   static async get(id: string): Promise<Board | null> {
     const query = `--sql
       SELECT
@@ -121,20 +135,6 @@ class BoardModel {
     ]);
 
     return rows.length === 0 ? null : rows[0];
-  }
-
-  static async delete(id: string): Promise<boolean> {
-    const query = `--sql
-      DELETE FROM
-        boards
-      WHERE
-        id = $1
-        AND closed = true;
-    `;
-
-    const { rowCount } = await pgPool.query(query, [id]);
-
-    return rowCount === 1;
   }
 }
 
