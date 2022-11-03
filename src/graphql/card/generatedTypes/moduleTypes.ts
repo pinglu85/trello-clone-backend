@@ -16,7 +16,7 @@ export namespace CardModule {
       | 'archiveAllCards'
       | 'createCard'
       | 'deleteCard'
-      | 'moveAllCardsInList'
+      | 'moveAllCards'
       | 'moveCard'
       | 'updateCard';
   }
@@ -76,7 +76,7 @@ export namespace CardModule {
       archiveAllCards?: gm.Middleware[];
       createCard?: gm.Middleware[];
       deleteCard?: gm.Middleware[];
-      moveAllCardsInList?: gm.Middleware[];
+      moveAllCards?: gm.Middleware[];
       moveCard?: gm.Middleware[];
       updateCard?: gm.Middleware[];
     };
