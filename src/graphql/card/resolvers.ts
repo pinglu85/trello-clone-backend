@@ -87,14 +87,15 @@ const Mutation: CardModule.MutationResolvers = {
       version: [],
     };
 
+    const cards = await CardModel.getAll(sourceListId, false);
+    if (cards.length === 0) return [];
+
     const cardsInDestinationList = await CardModel.getAll(
       destinationListId,
       false
     );
     const lastCard = getLast(cardsInDestinationList);
     let prevCardLexoRank = lastCard && LexoRank.parse(lastCard.rank);
-
-    const cards = await CardModel.getAll(sourceListId, false);
 
     for (const card of cards) {
       const newLexoRank = prevCardLexoRank
