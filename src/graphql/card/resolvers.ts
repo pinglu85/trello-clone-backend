@@ -20,6 +20,9 @@ const Query: CardModule.QueryResolvers = {
 
 const Mutation: CardModule.MutationResolvers = {
   archiveAllCards: async (_, { listId }) => {
+    const cards = await CardModel.getAll(listId, false);
+    if (cards.length === 0) return [];
+
     const updateMap: CardUpdateManyUpdateMap = {
       id: [],
       boardId: [],
@@ -30,9 +33,6 @@ const Mutation: CardModule.MutationResolvers = {
       rank: [],
       version: [],
     };
-
-    const cards = await CardModel.getAll(listId, false);
-    if (cards.length === 0) return [];
 
     for (const card of cards) {
       updateMap.id.push(card.id);
@@ -76,6 +76,9 @@ const Mutation: CardModule.MutationResolvers = {
     _,
     { sourceListId, destinationBoardId, destinationListId }
   ) => {
+    const cards = await CardModel.getAll(sourceListId, false);
+    if (cards.length === 0) return [];
+
     const updateMap: CardUpdateManyUpdateMap = {
       id: [],
       boardId: [],
@@ -86,9 +89,6 @@ const Mutation: CardModule.MutationResolvers = {
       rank: [],
       version: [],
     };
-
-    const cards = await CardModel.getAll(sourceListId, false);
-    if (cards.length === 0) return [];
 
     const cardsInDestinationList = await CardModel.getAll(
       destinationListId,
