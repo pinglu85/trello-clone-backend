@@ -72,7 +72,7 @@ const Mutation: CardModule.MutationResolvers = {
     return CardModel.delete(id);
   },
 
-  moveAllCardsInList: async (
+  moveAllCards: async (
     _,
     { sourceListId, destinationBoardId, destinationListId }
   ) => {

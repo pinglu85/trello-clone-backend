@@ -31,7 +31,7 @@ type Mutation {
 
   deleteCard(id: ID!): Boolean!
 
-  moveAllCardsInList(
+  moveAllCards(
     sourceListId: String!
     destinationBoardId: String!
     destinationListId: String!
