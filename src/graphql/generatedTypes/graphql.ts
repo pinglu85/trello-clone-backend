@@ -65,6 +65,7 @@ export type ListUpdates = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  archiveAllCards: Array<Card>;
   createBoard: Board;
   createCard: Card;
   createList: List;
@@ -77,6 +78,11 @@ export type Mutation = {
   updateBoard: Board;
   updateCard: Card;
   updateList: List;
+};
+
+
+export type MutationArchiveAllCardsArgs = {
+  listId: Scalars['String'];
 };
 
 
@@ -330,6 +336,7 @@ export type ListResolvers<ContextType = any, ParentType extends ResolversParentT
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  archiveAllCards?: Resolver<Array<ResolversTypes['Card']>, ParentType, ContextType, RequireFields<MutationArchiveAllCardsArgs, 'listId'>>;
   createBoard?: Resolver<ResolversTypes['Board'], ParentType, ContextType, RequireFields<MutationCreateBoardArgs, 'background' | 'name'>>;
   createCard?: Resolver<ResolversTypes['Card'], ParentType, ContextType, RequireFields<MutationCreateCardArgs, 'boardId' | 'listId' | 'name' | 'rank'>>;
   createList?: Resolver<ResolversTypes['List'], ParentType, ContextType, RequireFields<MutationCreateListArgs, 'boardId' | 'name' | 'rank'>>;

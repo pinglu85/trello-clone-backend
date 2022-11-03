@@ -19,6 +19,40 @@ const Query: CardModule.QueryResolvers = {
 };
 
 const Mutation: CardModule.MutationResolvers = {
+  archiveAllCards: async (_, { listId }) => {
+    const updateMap: CardUpdateManyUpdateMap = {
+      id: [],
+      boardId: [],
+      closed: [],
+      description: [],
+      listId: [],
+      name: [],
+      rank: [],
+      version: [],
+    };
+
+    const cards = await CardModel.getAll(listId, false);
+    if (cards.length === 0) return [];
+
+    for (const card of cards) {
+      updateMap.id.push(card.id);
+      updateMap.boardId.push(card.boardId);
+      updateMap.closed.push(true);
+      updateMap.description.push(card.description);
+      updateMap.listId.push(card.listId);
+      updateMap.name.push(card.name);
+      updateMap.rank.push(card.rank);
+      updateMap.version.push(card.version);
+    }
+
+    const updatedCards = await CardModel.updateMany(updateMap);
+    if (updatedCards.length !== cards.length) {
+      throw new EditConflictError('cards');
+    }
+
+    return updatedCards;
+  },
+
   createCard: async (_, { boardId, listId, name, rank }) => {
     try {
       return await CardModel.insert(boardId, listId, name, rank);

@@ -13,6 +13,7 @@ export namespace CardModule {
       | 'rank';
     Query: 'cards' | 'card';
     Mutation:
+      | 'archiveAllCards'
       | 'createCard'
       | 'deleteCard'
       | 'moveAllCardsInList'
@@ -72,6 +73,7 @@ export namespace CardModule {
     };
     Mutation?: {
       '*'?: gm.Middleware[];
+      archiveAllCards?: gm.Middleware[];
       createCard?: gm.Middleware[];
       deleteCard?: gm.Middleware[];
       moveAllCardsInList?: gm.Middleware[];

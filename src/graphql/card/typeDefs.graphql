@@ -20,6 +20,8 @@ input CardUpdates {
 }
 
 type Mutation {
+  archiveAllCards(listId: String!): [Card!]!
+
   createCard(
     boardId: String!
     listId: String!
