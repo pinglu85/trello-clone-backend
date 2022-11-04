@@ -2,9 +2,9 @@ import { LexoRank } from 'lexorank';
 
 import type { Orderable } from '../types';
 
-function calcItemRank<T extends Orderable>(
-  prevItem: T | undefined,
-  nextItem: T | undefined
+function calcItemRank(
+  prevItem: Orderable | undefined,
+  nextItem: Orderable | undefined
 ): string {
   const prevItemLexoRank = prevItem && LexoRank.parse(prevItem.rank);
   const nextItemLexoRank = nextItem && LexoRank.parse(nextItem.rank);
